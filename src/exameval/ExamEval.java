@@ -4,6 +4,7 @@
  */
 package exameval;
 
+import exameval.algorithm.set.SetNameCheck;
 import exameval.domain.question.Question;
 import exameval.domain.rubric.Rubric;
 import exameval.domain.svg.SVGEllipse;
@@ -72,7 +73,9 @@ public class ExamEval {
         
         if(true){
         	EvaluationPlatformService evaluator = new EvaluationPlatformServiceImpl();
-        	evaluator.evaluate(null, null, null, null, null);
+        	//evaluator.evaluate(null, null, null, null, null);
+        	
+        	SetNameCheck.isSameZone("", "", new ArrayList<String>(), new ArrayList<String>());
         }
     }
     

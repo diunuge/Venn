@@ -99,5 +99,9 @@ public class Rubric {
 	public ArrayList<MarkData> getSubQuestionMarkDataSets(int subQuestionIndex, int markSetIndex) {
 		return questions.get(0).getSubQuestionMarkDataSets(subQuestionIndex, markSetIndex);
 	}
+	
+	public int getSubQuestionMarkSetMarks(int subQuestionIndex, int markSetIndex){
+		return questions.get(0).getSubQuestionMarkSetMarks(subQuestionIndex, markSetIndex);
+	}
 
 }

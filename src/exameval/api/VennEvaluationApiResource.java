@@ -1,5 +1,6 @@
 package exameval.api;
 
+import exameval.domain.feedback.Feedback;
 import exameval.domain.question.Question;
 import exameval.domain.rubric.Rubric;
 import exameval.domain.svg.SVGImage;
@@ -31,8 +32,8 @@ public class VennEvaluationApiResource {
         
         Rubric markingRubric = new Rubric("Venn Diagram");
 
-        String results = null;
-        
+        Feedback feedback = new Feedback();
+        feedback.setQuestionType("Venn Diagram");
         
         //Parse question
         QuestionReadPlatformService questionReader = new QuestionReadPlatformServiceImpl();
@@ -56,10 +57,10 @@ public class VennEvaluationApiResource {
         
         //Evaluate
         EvaluationPlatformService evaluator = new EvaluationPlatformServiceImpl();
-        evaluator.evaluate(vennDiagramStudentAnswer, question, vennDiagramModelAnswer, markingRubric, results);
+        evaluator.evaluate(vennDiagramStudentAnswer, question, vennDiagramModelAnswer, markingRubric, feedback);
         
         //Export results
         ResultExportPlatformService resultExporter = new ResultExportPlatformServiceImpl();
-        resultExporter.exportXML(results);
+        resultExporter.exportXML(feedback);
     }
 }

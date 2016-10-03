@@ -97,4 +97,8 @@ public class Question {
 	public ArrayList<MarkData> getSubQuestionMarkDataSets(int subQuestionIndex, int markSetIndex) {
 		return subQuestions.get(subQuestionIndex).getMarkDataSets(markSetIndex);
 	}
+	
+	public int getSubQuestionMarkSetMarks(int subQuestionIndex, int markSetIndex){
+		return subQuestions.get(subQuestionIndex).getMarkSetMarks(markSetIndex);
+	}
 }

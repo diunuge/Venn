@@ -16,7 +16,7 @@ public class MarkDataSet extends MarkData {
         this.setName = setName;
     }
     
-    String getSetName(){
+    public String getSetName(){
         return this.setName;
     }
 }

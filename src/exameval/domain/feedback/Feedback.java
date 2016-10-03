@@ -29,6 +29,13 @@ public class Feedback {
 		this.totalMarks = totalMarks;
 	}
 	
+	public void addSubQuestion(FeedbackSubQuestion subQuestion){
+		if(subquestionFeddbacks==null)
+			subquestionFeddbacks = new ArrayList<>();
+		
+		subquestionFeddbacks.add(subQuestion);
+	}
+	
 	public void addSubQuestion(String subQuestionId, int marks){
 		if(subquestionFeddbacks==null)
 			subquestionFeddbacks = new ArrayList<>();
@@ -38,6 +45,26 @@ public class Feedback {
 	
 	public void addSubQuestionFeedback(String feedback, int subQuestionFeddbackIndex){
 		subquestionFeddbacks.get(subQuestionFeddbackIndex).addFeedback(feedback);
+	}
+	
+	public String getQuestionId(){
+		return this.questionId;
+	}
+	
+	public String getQuestionType(){
+		return this.questionType;
+	}
+	
+	public int getTotalMarks(){
+		return this.totalMarks;
+	}
+	
+	public ArrayList<FeedbackSubQuestion> getSubQuestionFeddbacks(){
+		return this.subquestionFeddbacks;
+	}
+	
+	public FeedbackSubQuestion getSubQuestionFeddback(int subQuestionFeedbackIndex){
+		return this.subquestionFeddbacks.get(subQuestionFeedbackIndex);
 	}
 	
 	public String toString(){

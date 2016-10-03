@@ -11,7 +11,7 @@ package exameval.domain.rubric;
 public abstract class MarkData {
     protected String type; //Zone or Set
     
-    String getType(){
+    public String getType(){
         return this.type;
     }
 }

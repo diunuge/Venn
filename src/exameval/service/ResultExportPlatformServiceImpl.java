@@ -4,6 +4,8 @@
  */
 package exameval.service;
 
+import exameval.domain.feedback.Feedback;
+
 /**
  *
  * @author Diunuge
@@ -11,7 +13,7 @@ package exameval.service;
 public class ResultExportPlatformServiceImpl implements ResultExportPlatformService{
 
     @Override
-    public void exportXML(String results) {
+    public void exportXML(Feedback feedback) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     

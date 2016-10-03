@@ -19,4 +19,12 @@ public class FeedbackSubQuestion {
 		
 		feedbacks.add(feedback);
 	}
+	
+	public void addMarks(int marks){
+		this.marks = marks;
+	}
+	
+	public int getMarks(){
+		return this.marks;
+	}
 }

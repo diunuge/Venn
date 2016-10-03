@@ -54,4 +54,8 @@ public class MarkSet {
 	public ArrayList<MarkData> getMarkDataSets() {
 		return this.markDataSets;
 	}
+	
+	public int getMarks(){
+		return this.marks;
+	}
 }

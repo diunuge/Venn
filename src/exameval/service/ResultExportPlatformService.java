@@ -4,12 +4,14 @@
  */
 package exameval.service;
 
+import exameval.domain.feedback.Feedback;
+
 /**
  *
  * @author Diunuge
  */
 public interface ResultExportPlatformService {
 
-    public void exportXML(String results);
+    public void exportXML(Feedback feedback);
     
 }

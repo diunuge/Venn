@@ -19,4 +19,16 @@ public class MarkDataZone extends MarkData{
         this.label = label;
         this.color = color;
     }
+    
+    public String getZoneIdentifire(){
+    	return this.zoneIdentifire;
+    }
+    
+    public String getLabel(){
+    	return this.label;
+    }
+    
+    public String getColor(){
+    	return this.color;
+    }
 }

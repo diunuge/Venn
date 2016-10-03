@@ -74,4 +74,8 @@ class SubQuestion {
 	public ArrayList<MarkData> getMarkDataSets(int markSetIndex) {
 		return markSets.get(markSetIndex).getMarkDataSets();
 	}
+	
+	public int getMarkSetMarks(int markSetIndex){
+		return markSets.get(markSetIndex).getMarks();
+	}
 }

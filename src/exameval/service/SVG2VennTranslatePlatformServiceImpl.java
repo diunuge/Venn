@@ -131,7 +131,7 @@ public class SVG2VennTranslatePlatformServiceImpl implements SVG2VennTranslatePl
                 
                 //debug
                 if(vennZones.get(i).isValid())
-                    System.out.println("Name : "+vennZones.get(i).getName()+"\tpixels : "+vennZones.get(i).numOfPixels()
+                    System.out.println("Name : "+vennZones.get(i).getIdentifire()+"\tpixels : "+vennZones.get(i).numOfPixels()
                             +"\tcentroid : ("+vennZones.get(i).getCentroid().getX()+","+vennZones.get(i).getCentroid().getY()+")");
             }
             
@@ -381,7 +381,7 @@ public class SVG2VennTranslatePlatformServiceImpl implements SVG2VennTranslatePl
                 
                 //debug
                 if(vennZones.get(i).isValid())
-                    System.out.println("Name : "+vennZones.get(i).getName()+"\tpixels : "+vennZones.get(i).numOfPixels()
+                    System.out.println("Name : "+vennZones.get(i).getIdentifire()+"\tpixels : "+vennZones.get(i).numOfPixels()
                             +"\tcentroid : ("+vennZones.get(i).getCentroid().getX()+","+vennZones.get(i).getCentroid().getY()+")");
             }
             

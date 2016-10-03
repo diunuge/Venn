@@ -12,7 +12,7 @@ import exameval.domain.coordinate.Coordinate2D;
  */
 public class VennZone {
     
-    private String name;
+    private String identifire;
     private int pixels;     //no of dots in the allocated area
     private Coordinate2D centroid;
     private boolean isValid;
@@ -20,15 +20,15 @@ public class VennZone {
     private String color;
     
     public VennZone(String name){
-        this.name = name;
+        this.identifire = name;
         this.pixels = 0;
         this.centroid = null;
         this.isValid = false;
         this.color = null;
     }
     
-    public String getName(){
-        return this.name;
+    public String getIdentifire(){
+        return this.identifire;
     }
     
     public VennValue getVennValue(){
@@ -75,7 +75,7 @@ public class VennZone {
     }
 
     void print() {
-        System.out.print("Name: " + this.name + "\tValue: ");
+        System.out.print("Name: " + this.identifire + "\tValue: ");
         if(this.value!=null)
             System.out.print(this.value.getValue());
         else
@@ -89,7 +89,7 @@ public class VennZone {
     }
     
     void printDebug() {
-        System.out.print("Name: " + this.name + "\tValue: ");
+        System.out.print("Name: " + this.identifire + "\tValue: ");
         if(this.value!=null)
             System.out.print(this.value.getValue());
         else
@@ -111,6 +111,10 @@ public class VennZone {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.identifire = name;
+    }
+    
+    public String getColor(){
+    	return this.color;
     }
 }

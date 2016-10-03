@@ -38,6 +38,18 @@ public class VennDiagram {
         this.zones.add(zone);
     }
     
+    public int getNoOfZones(){
+    	return this.zones.size();
+    }
+    
+    public VennZone getZone(int zoneIndex){
+    	return this.zones.get(zoneIndex);
+    }
+    
+    public String getZoneIdentifire(int zoneIndex){
+    	return this.zones.get(zoneIndex).getIdentifire();
+    }
+    
     public ArrayList<String> getSetLabels(){
     	ArrayList<String> setLabels = new ArrayList<>();
     	

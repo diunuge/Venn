@@ -4,6 +4,7 @@
  */
 package exameval.service;
 
+import exameval.domain.feedback.Feedback;
 import exameval.domain.question.Question;
 import exameval.domain.rubric.Rubric;
 import exameval.domain.venn.VennDiagram;
@@ -14,6 +15,6 @@ import exameval.domain.venn.VennDiagram;
  */
 public interface EvaluationPlatformService {
 
-    public void evaluate(VennDiagram svgImageStudentAnswer, Question question, VennDiagram svgImageModelAnswer, Rubric markingRubric, String results);
+    public void evaluate(VennDiagram svgImageStudentAnswer, Question question, VennDiagram svgImageModelAnswer, Rubric markingRubric, Feedback feedback);
     
 }
