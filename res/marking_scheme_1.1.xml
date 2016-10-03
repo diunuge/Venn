@@ -1,0 +1,44 @@
+<marking_scheme> 
+	<type>Venn Diagram</type>
+	<mandatory></mandatory>
+	<solution id="1">
+		<mark_set mark="1" method="all">
+			<data>
+				<set>c</set>
+			</data>
+			<feedback>
+				<success></success>
+				<fail>Set C is not marked!</fail>
+			</feedback>
+		</mark_set>
+		<mark_set mark="2" method="all">
+			<data>
+				<zone><label>~A.~B.~C</label><value>10</value><color>ignore<color></zone>
+				<zone><label>~A.~B.C</label><value>4</value><color>ignore<color></zone>
+				<zone><label>~A.B.C</label><value>12</value><color>ignore<color></zone>
+				<zone><label>A.~B.~C</label><value>3</value><color>ignore<color></zone>
+				<zone><label>A.~B.C</label><value>2</value><color>ignore<color></zone>
+				<zone><label>A.B.C</label><value>9</value><color>ignore<color></zone>
+			</data>
+			<feedback>
+				<success></success>
+				<fail>All 6 zone values are not properly marked!</fail>
+			</feedback>
+			<mark_set_alt mark="1" method="any_4">
+				<data>
+					<zone><label>~A.~B.~C</label><value>10</value><color>ignore<color></zone>
+					<zone><label>~A.~B.C</label><value>4</value><color>ignore<color></zone>
+					<zone><label>~A.B.C</label><value>12</value><color>ignore<color></zone>
+					<zone><label>A.~B.~C</label><value>3</value><color>ignore<color></zone>
+					<zone><label>A.~B.C</label><value>2</value><color>ignore<color></zone>
+					<zone><label>A.B.C</label><value>9</value><color>ignore<color></zone>
+				</data>
+				<feedback>
+					<success></success>
+					<fail>At least 4 zone values are not properly marked!</fail>
+				</feedback>
+			</mark_set_alt>
+		</mark_set>
+	</solution> 
+</marking_scheme>
+

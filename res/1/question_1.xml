@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<question_bank>
+	<question id="q01" >
+		<type>Venn Diagram</type>
+		<description>පන්තියක ළමයින් 35 දෙනෙකුගෙන් 17 කට රතු පෑන් ද 22 කට නිල් පෑන් ද තිබුණු අතර 5 දෙනෙකුට එම පාට දෙවර්ගයෙන් එක් වර්ගයක හෝ පෑන් නොතිබුණි.</description>
+		<subquestion id="q01-01" >ඉහත තොරතුරු වෙන් රූප සටහනක නිරූපණය කරන්න.</subquestion>
+		<subquestion id="q01-02" >එමඟින් පාට දෙකින්ම පෑන් තිබූ ළමයින් ගණන සොයන්න.</subquestion>
+	</question>
+</question_bank>

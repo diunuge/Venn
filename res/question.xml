@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<question_bank>
+	<question id="q01" >
+		<type>Venn Diagram</type>
+		<description>පුද්ගලයෙක් තමා සතු රු. 600000 කින් 30% ක් යොදවා සමාගමක නාමික අගය රු. 25 බැගින් වූ කොටස් රු. 24 බැගින් මිල දී ගෙන ඉතිරි මුදල ස්ථාවර ගිණුමක තැන්පත් කරයි.</description>
+		<subquestion id="q01-01" >කොටස් මිල දී ගැනීමට යොදවන මුදල රු. 180000 ක් බව පෙන්වන්න.</subquestion>
+		<subquestion id="q01-02" >මිල දී ගත් කොටස්වල නාමික අගය රු. 187500 ක් බව පෙන්වන්න.</subquestion>
+		<subquestion id="q01-03" >සමාගම වසරකට 5% ක ලාභාංශයක් ගෙවයි නම් මිල දී ගත් කොටස් වලින් ලැබෙන වාර්ෂික ආදායම සොයන්න.</subquestion>
+		<subquestion id="q01-04" >ගිණුමේ තැන්පත් කරනු ලබන මුදල කොපමණ ද?</subquestion>
+		<subquestion id="q01-05" >වාර්ෂික වැල් පොලී අනුපාතිකය 8% ක් නම් මුල් වසර දෙක අවසානයේ දී ගිණුමෙහි ඇති මුළු මුදල ගණනය කරන්න 8.</subquestion>
+	</question>
+</question_bank>
