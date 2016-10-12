@@ -28,7 +28,6 @@ public class EvaluationPlatformServiceImpl implements EvaluationPlatformService{
     @Override
     public void evaluate(VennDiagram svgImageStudentAnswer, Question question, VennDiagram svgImageModelAnswer, Rubric markingRubric, Feedback feedback) {
 
-    	feedback = new Feedback();
     	//identify the labels pairs
     	ArrayList<String> setLabelsModel = svgImageModelAnswer.getSetLabels();
     	ArrayList<String> setLabelsAnswer = svgImageStudentAnswer.getSetLabels();
@@ -48,37 +47,40 @@ public class EvaluationPlatformServiceImpl implements EvaluationPlatformService{
     	
     	ArrayList<String> setLabelsAnswerArranged = new ArrayList<>();
     	
-    	for(int modelLabelIndex=0; 
-    			modelLabelIndex<setLabelsModel.size(); 
-    			modelLabelIndex++){
-    		
-    		double maxRowSimilarity = 0.0;
-    		Integer associationIndex = null;
-    		
-    		for(int answerLabelIndex=0; answerLabelIndex<setLabelsAnswer.size(); answerLabelIndex++){
-        		
-    			double similarityTemp = StringCheck.getSimilarity(
-    					setLabelsModel.get(modelLabelIndex),
-    					setLabelsAnswer.get(answerLabelIndex));
-    			smilarity[modelLabelIndex][answerLabelIndex] = similarityTemp;
-    			
-    			if(similarityTemp>maxRowSimilarity && similarityTemp >= 0.1){
-    				maxRowSimilarity = similarityTemp;
-    				associationIndex = answerLabelIndex;
-    			}
-        	}
-    		association[modelLabelIndex] = associationIndex;
-    		setLabelsAnswerArranged.add(setLabelsAnswer.get(associationIndex));
-    	}
-    	
 	    //TODO: generate feedback for missing labels
     	
     	//Check for the basic structure
     	if(setLabelsModel.size()!= setLabelsAnswer.size()){
     		//TODO: generate feedback : diagram mismatch - set numbers are different
+    		feedback.addQuestionFeedback("Set structure is different, Need to draw diagram with "+ setLabelsModel.size() + " sets");
+    		feedback.setTotalMarks(0);
     	}
     	else{
-    		feedback.setQuestionId(question.getId());
+    		
+    		for(int modelLabelIndex=0; 
+        			modelLabelIndex<setLabelsModel.size(); 
+        			modelLabelIndex++){
+        		
+        		double maxRowSimilarity = 0.0;
+        		Integer associationIndex = null;
+        		
+        		for(int answerLabelIndex=0; answerLabelIndex<setLabelsAnswer.size(); answerLabelIndex++){
+            		
+        			double similarityTemp = StringCheck.getSimilarity(
+        					setLabelsModel.get(modelLabelIndex),
+        					setLabelsAnswer.get(answerLabelIndex));
+        			smilarity[modelLabelIndex][answerLabelIndex] = similarityTemp;
+        			
+        			if(similarityTemp>maxRowSimilarity && similarityTemp >= 0.1){
+        				maxRowSimilarity = similarityTemp;
+        				associationIndex = answerLabelIndex;
+        			}
+            	}
+        		association[modelLabelIndex] = associationIndex;
+        		setLabelsAnswerArranged.add(setLabelsAnswer.get(associationIndex));
+        	}
+    		
+    		feedback.setQuestionId(markingRubric.getQuestionID());
     		
     		for(int subQuestionIndex = 0; 
     				subQuestionIndex< markingRubric.getNoOfSubQuestions(); 
@@ -97,8 +99,9 @@ public class EvaluationPlatformServiceImpl implements EvaluationPlatformService{
     				ArrayList<MarkData> markDataSets = 
     						markingRubric.getSubQuestionMarkDataSets(subQuestionIndex, markSetIndex);
     				
+    				//String method = markingRubric.getSubQuestionMarkSetMethod(subQuestionIndex, markSetIndex);
     				if(markingRubric.getSubQuestionMarkSetMethod(subQuestionIndex, markSetIndex).
-    						toLowerCase() == "all"){
+    						toLowerCase().equals("all")){
     					
     					boolean check = true;
     					for(int markSetElementIndex = 0; 
@@ -109,24 +112,23 @@ public class EvaluationPlatformServiceImpl implements EvaluationPlatformService{
     						MarkData markData = markDataSets.get(markSetElementIndex);
     						String type = markData.getType();
     						
-    						if(type == "set"){
+    						if(type.equals("set")){
     							MarkDataSet markDataSet = (MarkDataSet)markData;
     							if(!SetNameCheck.isSameSetName(markDataSet.getSetName(), 
     									setLabelsModel, setLabelsAnswerArranged)){
     								
     								check = false;
-    								feedbackSubQ.addMarks(0);
-    								feedbackSubQ.addFeedback("Invalid set name \'" + markDataSet.getSetName() + "\'");
+    								feedbackSubQ.addFeedback("Invalid set label \'" + markDataSet.getSetName() + "\'");
     								break;
     							}
     							else{
-    								feedbackSubQ.addMarks(markingRubric.
-    										getSubQuestionMarkSetMarks(subQuestionIndex, markSetIndex));
-    								feedbackSubQ.addFeedback(null);
+    								//feedbackSubQ.addFeedback("Correct set label");
     							}
     						}
-    						else if(type == "zone"){
+    						else if(type.equals("zone")){
     							MarkDataZone markDataZone = (MarkDataZone)markData;
+    							
+    							boolean isZoneMatched = false;
     							
     							for(int zoneIndex=0; 
     									zoneIndex < svgImageStudentAnswer.getNoOfZones(); 
@@ -139,13 +141,15 @@ public class EvaluationPlatformServiceImpl implements EvaluationPlatformService{
     												svgImageStudentAnswer.getZoneIdentifire(zoneIndex), 
     												setLabelsModel, setLabelsAnswerArranged)){
     									
+    									isZoneMatched = true;
+    									
     									VennZone zoneAnswer = svgImageStudentAnswer.getZone(zoneIndex);
     									if((markDataZone.getLabel().equals(zoneAnswer.getVennValue().getValue())
     											|| markDataZone.getLabel().equals("ignore"))
     											&&
     											(markDataZone.getColor().equals(zoneAnswer.getColor())
     											|| markDataZone.getColor().equals("ignore"))){
-    										//Part of mark set is correct
+    										//feedbackSubQ.addFeedback("Correct zone");
     									}
     									else{
     										check = false;
@@ -158,7 +162,7 @@ public class EvaluationPlatformServiceImpl implements EvaluationPlatformService{
     												feedbackSubQ.addFeedback("No label present at the zone "+zoneAnswer.getIdentifire());
     											else{
     												feedbackSubQ.addFeedback("Label present at the zone \'"+zoneAnswer.getIdentifire()
-    														+ "\' should be corrected to " + markDataZone.getLabel());
+    														+ "\' should be corrected to " + markDataZone.getLabel()+ ", instead of "+zoneAnswer.getVennValue().getValue());
     												
     											}
     											
@@ -173,14 +177,13 @@ public class EvaluationPlatformServiceImpl implements EvaluationPlatformService{
     										break;
     									}
     								}
-    								if(zoneIndex== svgImageStudentAnswer.getNoOfZones()-1){
-    									//No zone has matched
-    									check = false;
-    								}
-    								if(!check){
-    									break;
-    								}
-    							}
+    							} // end of zone element evaluation
+
+								if(!isZoneMatched){
+									//No zone has matched
+									check = false;
+									break;
+								}
     						}
     						else{
     							Logger.getLogger("Invalid type\n");
@@ -191,50 +194,147 @@ public class EvaluationPlatformServiceImpl implements EvaluationPlatformService{
     					//Add feedbacks
     					
     					if(check){
-    						//TODO; Add general feedbacks to sub question
+    						feedbackSubQ.addMarks(markingRubric.getSubQuestionMarkSetMarks(subQuestionIndex, markSetIndex));
+    						feedbackSubQ.addFeedback("Correct answer");
     					}
     					else{
-    						
+							feedbackSubQ.addMarks(0);
     					}
     					
-    				} // Evaluated for each mark set "all"
+    				} 
+    				
+    				// Evaluated for each mark set "all"
     				else if(markingRubric.getSubQuestionMarkSetMethod(subQuestionIndex, markSetIndex).
     						toLowerCase().contains("any")){
     					
+    					int reqiredCorrectElements = Integer.parseInt(markingRubric.
+    							getSubQuestionMarkSetMethod(subQuestionIndex, markSetIndex).
+    							split("_")[1]);
+    					int totalCorrectElements = 0;
+    					
     					for(int markSetElementIndex = 0; 
-        						markSetElementIndex< markingRubric.getNoOfMarkSetElements(subQuestionIndex, markSetIndex); 
+        						markSetElementIndex< markDataSets.size(); 
         						markSetElementIndex++){
                 			
+    						
+    						MarkData markData = markDataSets.get(markSetElementIndex);
+    						String type = markData.getType();
+    						
+    						if(type.equals("set")){
+    							MarkDataSet markDataSet = (MarkDataSet)markData;
+    							if(!SetNameCheck.isSameSetName(markDataSet.getSetName(), 
+    									setLabelsModel, setLabelsAnswerArranged)){
+    								
+    								feedbackSubQ.addFeedback("Invalid set label \'" + markDataSet.getSetName() + "\'");
+    							}
+    							else{
+    								//feedbackSubQ.addFeedback("Correct set label");
+    								totalCorrectElements++;
+    							}
+    						}
+    						else if(type.equals("zone")){
+    							MarkDataZone markDataZone = (MarkDataZone)markData;
+    							
+    							boolean isZoneMatched = false;
+    							
+    							for(int zoneIndex=0; 
+    									zoneIndex < svgImageStudentAnswer.getNoOfZones(); 
+    									zoneIndex++){
+    								
+    								//Matching zone identifire
+    								if(SetNameCheck.
+    										isSameZone(
+    												markDataZone.getZoneIdentifire(), 
+    												svgImageStudentAnswer.getZoneIdentifire(zoneIndex), 
+    												setLabelsModel, setLabelsAnswerArranged)){
+    									
+    									isZoneMatched = true;
+    									
+    									VennZone zoneAnswer = svgImageStudentAnswer.getZone(zoneIndex);
+    									if((markDataZone.getLabel().equals(zoneAnswer.getVennValue().getValue())
+    											|| markDataZone.getLabel().equals("ignore"))
+    											&&
+    											(markDataZone.getColor().equals(zoneAnswer.getColor())
+    											|| markDataZone.getColor().equals("ignore"))){
+    										
+    										//feedbackSubQ.addFeedback("Correct zone");
+    										totalCorrectElements++;
+    									}
+    									else{
+    										
+    										//Add feedbacks
+    										if(!markDataZone.getLabel().equals(zoneAnswer.getVennValue().getValue()) 
+    												&& !markDataZone.getLabel().equals("ignore")){
+    											//Labels are not matching
+    											if(zoneAnswer.getVennValue().getValue()==null)
+    												feedbackSubQ.addFeedback("No label present at the zone "+zoneAnswer.getIdentifire());
+    											else{
+    												feedbackSubQ.addFeedback("Label present at the zone \'"+zoneAnswer.getIdentifire()
+    														+ "\' should be corrected to " + markDataZone.getLabel()+ ", instead of "+zoneAnswer.getVennValue().getValue());
+    												
+    											}
+    											
+    										}
+    										
+    										if(zoneAnswer.getColor()==null 
+        											&& !markDataZone.getColor().equals("ignore")){
+    											//Zone is not colored
+    											feedbackSubQ.addFeedback("Zone \'"+zoneAnswer.getIdentifire() +"\' has to be colored");
+    										}
+    										
+    										break;
+    									}
+    								}
+    							} // end of zone element evaluation
+
+								if(!isZoneMatched){
+									//No zone has matched
+								}
+    						}
+    						else{
+    							Logger.getLogger("Invalid type\n");
+    						}
             				
                 		}
+    					
+    					//Add feedbacks
+    					
+    					if(reqiredCorrectElements<=totalCorrectElements){
+    						feedbackSubQ.addMarks(markingRubric.getSubQuestionMarkSetMarks(subQuestionIndex, markSetIndex));
+    						feedbackSubQ.addFeedback("Correct answer");
+    					}
+    					else{
+							feedbackSubQ.addMarks(0);
+							feedbackSubQ.addFeedback(totalCorrectElements+" correct, "+reqiredCorrectElements+" reqired!");
+    					}
     				} // Evaluated for each mark set "any"
     				
     				markSetFeedbacks.add(feedbackSubQ);
     				
-    				//Find the markset feedback with maximum mark
-    				FeedbackSubQuestion markSetFeedbackWithMaxMark = markSetFeedbacks.get(0);
-    				for(int markSetFeedbackIndex=1; markSetFeedbackIndex<markSetFeedbacks.size(); markSetFeedbackIndex++){
-    					if(markSetFeedbackWithMaxMark.getMarks() < markSetFeedbacks.get(markSetFeedbackIndex).getMarks()){
-    						markSetFeedbackWithMaxMark = markSetFeedbacks.get(markSetFeedbackIndex);
-    					}
-    				}
-    				
-    				feedback.addSubQuestion(markSetFeedbackWithMaxMark);
-    				
-        		} //Evaluated for each sub question
+        		} // evaluated for one mark set
     			
-    			//calculate total Marks
-    			int totalMarks = 0;
-    			for(int subQuestionFeedbackIndex=0; 
-    					subQuestionFeedbackIndex<feedback.getSubQuestionFeddbacks().size(); 
-    					subQuestionFeedbackIndex++){
-    				
-    				totalMarks+= feedback.getSubQuestionFeddback(subQuestionFeedbackIndex).getMarks();
-    			}
-    		}
+    			//Find the markset feedback with maximum mark
+				FeedbackSubQuestion markSetFeedbackWithMaxMark = markSetFeedbacks.get(0);
+				for(int markSetFeedbackIndex=1; markSetFeedbackIndex<markSetFeedbacks.size(); markSetFeedbackIndex++){
+					if(markSetFeedbackWithMaxMark.getMarks() < markSetFeedbacks.get(markSetFeedbackIndex).getMarks()){
+						markSetFeedbackWithMaxMark = markSetFeedbacks.get(markSetFeedbackIndex);
+					}
+				}
+				
+				feedback.addSubQuestion(markSetFeedbackWithMaxMark);
+    		}// End of marking sub questions
+    		
+    		//calculate total Marks
+			int totalMarks = 0;
+			for(int subQuestionFeedbackIndex=0; 
+					subQuestionFeedbackIndex<feedback.getSubQuestionFeddbacks().size(); 
+					subQuestionFeedbackIndex++){
+				
+				totalMarks+= feedback.getSubQuestionFeddback(subQuestionFeedbackIndex).getMarks();
+			}
+			
+			feedback.setTotalMarks(totalMarks);
     	}
-    	
-    	
     }
     
     

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<rubric> 
+	<type>Venn Diagram</type>
+	<mandatory></mandatory>
+	<question id="q01" totalMarks="10">
+		<subQuestion id="q01-01" modelDiagram="dm01" totalMarks="1">
+			<markSet id="0" marks="1" method="all">
+				<zone><label>~A.~B</label><value>14</value><color>ignore</color></zone>
+			</markSet>
+			<feedback>
+				<success></success>
+				<fail>Value 14 is not marked!</fail>
+			</feedback>
+		</subQuestion>
+		<subQuestion id="q01-02" modelDiagram="dm01" totalMarks="1">
+			<markSet id="0" marks="2" method="all">
+				<zone><label>~A.B</label><value>12</value><color>ignore</color></zone>
+			</markSet>
+			<feedback>
+				<success></success>
+				<fail>Value 12 is not marked!</fail>
+			</feedback>
+		</subQuestion>
+		<subQuestion id="q01-03" modelDiagram="dm01" totalMarks="1">
+			<markSet id="0" marks="1" method="all">
+				<zone><label>A.B</label><value>9</value><color>ignore</color></zone>
+			</markSet>
+			<feedback>
+				<success></success>
+				<fail>Value 9 is not marked!</fail>
+			</feedback>
+		</subQuestion>
+	</question> 
+</rubric>
+

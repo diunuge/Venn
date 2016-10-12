@@ -104,4 +104,9 @@ public class Rubric {
 		return questions.get(0).getSubQuestionMarkSetMarks(subQuestionIndex, markSetIndex);
 	}
 
+	public String getQuestionID() {
+		// TODO Auto-generated method stub
+		return questions.get(0).getID();
+	}
+
 }

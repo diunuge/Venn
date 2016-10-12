@@ -18,7 +18,9 @@ public class SetNameCheck {
 			}
 			
 			if(i==setLabelsModel.size()-1){
-				//TODO Implement; Found no match in model set labels
+				//Found no match in model set labels
+				check = false;
+				break;
 			}
 		}
 		

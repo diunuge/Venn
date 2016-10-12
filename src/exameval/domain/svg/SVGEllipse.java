@@ -64,10 +64,15 @@ public class SVGEllipse extends SVGObject {
     
     public boolean isCloseToBoundry(double x, double y, double tolerance) {
         double focalDis = f1.getDistance(x, y) + f2.getDistance(x, y);
-        if(Math.abs(2*rx-focalDis) < tolerance*2)
+        if(Math.abs(2*rx-focalDis)/2 < tolerance)
             return true;
         else
             return false;
+    }
+    
+    public double getDistance(double x, double y) {
+        double focalDis = f1.getDistance(x, y) + f2.getDistance(x, y);
+        return Math.abs(2*rx-focalDis)/2;
     }
     
     @Override

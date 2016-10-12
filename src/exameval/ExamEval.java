@@ -5,6 +5,8 @@
 package exameval;
 
 import exameval.algorithm.set.SetNameCheck;
+import exameval.api.VennEvaluationApiResource;
+import exameval.domain.feedback.Feedback;
 import exameval.domain.question.Question;
 import exameval.domain.rubric.Rubric;
 import exameval.domain.svg.SVGEllipse;
@@ -33,7 +35,17 @@ public class ExamEval {
     public static void main(String[] args) {
         
         ExamEval eval = new ExamEval();
-        eval.initialize();
+        
+        if(true){
+    		
+    		String studentAnswerPath  = "C:/wamp/www/demo/bin/answer_min.svg";
+        	String questionPath  = "C:/wamp/www/demo/bin/question.xml";
+        	String modelAnswerPath  = "C:/wamp/www/demo/bin/model_min.svg";
+        	String markingSchemePath = "C:/wamp/www/demo/bin/rubric.xml";
+        	String resultsPath  = "C:/wamp/www/demo/bin/feedback.xml";
+        	
+        	VennEvaluationApiResource.evaluate(studentAnswerPath, questionPath, modelAnswerPath, markingSchemePath, resultsPath);
+        }
         
         if(false){
             MarkingRubricReadPlatformService rubricReader = new MarkingRubricReadPlatformServiceImpl();
@@ -54,7 +66,7 @@ public class ExamEval {
             svgReader.parse(svgImage, svgFile);
             svgImage.print();
 
-            SVG2VennTranslatePlatformService svg2VennTranslator = new SVG2VennTranslatePlatformServiceImpl();
+            SVG2VennTranslatePlatformService svg2VennTranslator = new SVG2VennTranslatePlatformServiceImplOld();
 
             svg2VennTranslator.translate(vennDiagram, svgImage);
 
@@ -71,7 +83,7 @@ public class ExamEval {
             System.out.println("අනුපාතිකය");
         }
         
-        if(true){
+        if(false){
         	EvaluationPlatformService evaluator = new EvaluationPlatformServiceImpl();
         	//evaluator.evaluate(null, null, null, null, null);
         	
@@ -89,10 +101,6 @@ public class ExamEval {
         lablesNominal = new ArrayList<>();
     }
     
-    public void run(){
-        initialize();
-    }
-    
     public void evaluate(String studentAnswerPath, String questionPath, String modelAnswerPath, String markingSchemePath, String resultsPath){
         
         Question question = new Question();
@@ -104,6 +112,9 @@ public class ExamEval {
         VennDiagram vennDiagramModelAnswer = new VennDiagram("Untitled");
         
         Rubric markingRubric = new Rubric("Venn Diagram");
+        
+        Feedback feedback = new Feedback();
+        feedback.setQuestionType("Venn Diagram");
 
         String results = null;
         
@@ -119,7 +130,7 @@ public class ExamEval {
         //svgImage.print();
         
         //Extract set information
-        SVG2VennTranslatePlatformService svg2VennTranslator = new SVG2VennTranslatePlatformServiceImpl();
+        SVG2VennTranslatePlatformService svg2VennTranslator = new SVG2VennTranslatePlatformServiceImplMulti();
         
         svg2VennTranslator.translate(vennDiagramStudentAnswer, svgImageStudentAnswer);
         svg2VennTranslator.translate(vennDiagramModelAnswer, svgImageModelAnswer);
@@ -130,83 +141,83 @@ public class ExamEval {
         
         //Evaluate
         EvaluationPlatformService evaluator = new EvaluationPlatformServiceImpl();
-        evaluator.evaluate(vennDiagramStudentAnswer, question, vennDiagramModelAnswer, markingRubric, results);
+        evaluator.evaluate(vennDiagramStudentAnswer, question, vennDiagramModelAnswer, markingRubric, feedback);
         
         //Export results
         ResultExportPlatformService resultExporter = new ResultExportPlatformServiceImpl();
-        resultExporter.exportXML(results);
+        //resultExporter.exportXML(feedback);
     }
     
-    private void initialize(){
-        sets.add(new SVGEllipse(197.5, 154, 149, 97.5));
-        sets.add(new SVGEllipse(367.5, 151, 149, 99));
-        sets.add(new SVGEllipse(280, 256, 144.5, 109.5));
-        
-        SVGText temp = new SVGText(86.5, 68.5, "A");
-        if(temp.isNumeric())
-            lablesNumeric.add(temp);
-        else
-            lablesNominal.add(temp);
-        
-        temp = new SVGText(463.5, 56.5, "B");
-        if(temp.isNumeric())
-            lablesNumeric.add(temp);
-        else
-            lablesNominal.add(temp);
-        
-        temp = new SVGText(268.5, 347.5, "C");
-        if(temp.isNumeric())
-            lablesNumeric.add(temp);
-        else
-            lablesNominal.add(temp);
-        
-        
-        temp = new SVGText(162.5, 67.5, "100");
-        if(temp.isNumeric())
-            lablesNumeric.add(temp);
-        else
-            lablesNominal.add(temp);
-        
-        temp = new SVGText(421.5, 63.5, "80");
-        if(temp.isNumeric())
-            lablesNumeric.add(temp);
-        else
-            lablesNominal.add(temp);
-        
-        temp = new SVGText(405.5, 126.5, "x");
-        if(temp.isNumeric())
-            lablesNumeric.add(temp);
-        else
-            lablesNominal.add(temp);
-        
-        temp = new SVGText(260.5, 183.5, "10");
-        if(temp.isNumeric())
-            lablesNumeric.add(temp);
-        else
-            lablesNominal.add(temp);
-        
-        temp = new SVGText(260.5, 75.5, "15");
-        if(temp.isNumeric())
-            lablesNumeric.add(temp);
-        else
-            lablesNominal.add(temp);
-        
-        temp = new SVGText(184.5, 219.5, "8");
-        if(temp.isNumeric())
-            lablesNumeric.add(temp);
-        else
-            lablesNominal.add(temp);
-        
-        temp = new SVGText(362.5, 344.5, "30");
-        if(temp.isNumeric())
-            lablesNumeric.add(temp);
-        else
-            lablesNominal.add(temp);
-        
-        temp = new SVGText(263.5, 282.5, "5");
-        if(temp.isNumeric())
-            lablesNumeric.add(temp);
-        else
-            lablesNominal.add(temp);
-    }
+//    private void initialize(){
+//        sets.add(new SVGEllipse(197.5, 154, 149, 97.5));
+//        sets.add(new SVGEllipse(367.5, 151, 149, 99));
+//        sets.add(new SVGEllipse(280, 256, 144.5, 109.5));
+//        
+//        SVGText temp = new SVGText(86.5, 68.5, "A");
+//        if(temp.isNumeric())
+//            lablesNumeric.add(temp);
+//        else
+//            lablesNominal.add(temp);
+//        
+//        temp = new SVGText(463.5, 56.5, "B");
+//        if(temp.isNumeric())
+//            lablesNumeric.add(temp);
+//        else
+//            lablesNominal.add(temp);
+//        
+//        temp = new SVGText(268.5, 347.5, "C");
+//        if(temp.isNumeric())
+//            lablesNumeric.add(temp);
+//        else
+//            lablesNominal.add(temp);
+//        
+//        
+//        temp = new SVGText(162.5, 67.5, "100");
+//        if(temp.isNumeric())
+//            lablesNumeric.add(temp);
+//        else
+//            lablesNominal.add(temp);
+//        
+//        temp = new SVGText(421.5, 63.5, "80");
+//        if(temp.isNumeric())
+//            lablesNumeric.add(temp);
+//        else
+//            lablesNominal.add(temp);
+//        
+//        temp = new SVGText(405.5, 126.5, "x");
+//        if(temp.isNumeric())
+//            lablesNumeric.add(temp);
+//        else
+//            lablesNominal.add(temp);
+//        
+//        temp = new SVGText(260.5, 183.5, "10");
+//        if(temp.isNumeric())
+//            lablesNumeric.add(temp);
+//        else
+//            lablesNominal.add(temp);
+//        
+//        temp = new SVGText(260.5, 75.5, "15");
+//        if(temp.isNumeric())
+//            lablesNumeric.add(temp);
+//        else
+//            lablesNominal.add(temp);
+//        
+//        temp = new SVGText(184.5, 219.5, "8");
+//        if(temp.isNumeric())
+//            lablesNumeric.add(temp);
+//        else
+//            lablesNominal.add(temp);
+//        
+//        temp = new SVGText(362.5, 344.5, "30");
+//        if(temp.isNumeric())
+//            lablesNumeric.add(temp);
+//        else
+//            lablesNominal.add(temp);
+//        
+//        temp = new SVGText(263.5, 282.5, "5");
+//        if(temp.isNumeric())
+//            lablesNumeric.add(temp);
+//        else
+//            lablesNominal.add(temp);
+//    }
 }

@@ -1,0 +1,17 @@
+Question Type:	"Venn Diagram"
+Question id:	"q01"
+Total Marks:	2
+
+Sub Question: "q01-01"
+	Marks: 0
+	Feedbacks; 
+		# Invalid set label 'A'
+Sub Question: "q01-02"
+	Marks: 2
+	Feedbacks; 
+		# Correct answer
+Sub Question: "q01-03"
+	Marks: 0
+	Feedbacks; 
+		# Label present at the zone 'A.C.B' should be corrected to 7, instead of 9
+		# 1 correct, 3 reqired!

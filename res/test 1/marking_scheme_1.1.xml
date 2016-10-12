@@ -2,19 +2,17 @@
 <rubric> 
 	<type>Venn Diagram</type>
 	<mandatory></mandatory>
-	<question id="q01" totalMarks="10"> 
+	<question id="q01" totalMarks="10">
 		<subQuestion id="q01-01" modelDiagram="dm02" totalMarks="1">
 			<markSet id="0" marks="1" method="all">
-				<zone><label>~A.B.C</label><value>12</value><color>ignore</color></zone>
-				<set>A</set>
-				<set>D</set>
+				<zone><label>~A.B.C</label><value>ignore</value><color>red</color></zone>
 			</markSet>
 			<feedback>
 				<success></success>
-				<fail></fail>
+				<fail>~A.B.C is not colored!</fail>
 			</feedback>
 		</subQuestion>
-		<subQuestion id="q01-02" modelDiagram="dm01" totalMarks="2">
+		<subQuestion id="q01-02" modelDiagram="dm01" totalMarks="1">
 			<markSet id="0" marks="2" method="all">
 				<zone><label>A.~B.~C</label><value>3</value><color>ignore</color></zone>
 				<zone><label>~A.~B.C</label><value>4</value><color>ignore</color></zone>
@@ -24,11 +22,11 @@
 				<fail></fail>
 			</feedback>
 		</subQuestion>
-		<subQuestion id="q01-03" modelDiagram="dm01" totalMarks="1">
-			<markSet id="0" marks="1" method="any_3">
+		<subQuestion id="q01-03" modelDiagram="dm01" totalMarks="any_1">
+			<markSet id="0" marks="1" method="all">
 				<zone><label>A.~B.C</label><value>2</value><color>ignore</color></zone>
-				<zone><label>A.B.C</label><value>7</value><color>ignore</color></zone>
-			</markSet>	
+				<zone><label>A.B.C</label><value>9</value><color>ignore</color></zone>
+			</markSet>
 			<feedback>
 				<success></success>
 				<fail></fail>

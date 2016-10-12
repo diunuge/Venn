@@ -14,7 +14,7 @@ import exameval.service.QuestionReadPlatformServiceImpl;
 import exameval.service.ResultExportPlatformService;
 import exameval.service.ResultExportPlatformServiceImpl;
 import exameval.service.SVG2VennTranslatePlatformService;
-import exameval.service.SVG2VennTranslatePlatformServiceImpl;
+import exameval.service.SVG2VennTranslatePlatformServiceImplMulti;
 import exameval.service.SVGReadPlatformService;
 import exameval.service.SVGReadPlatformServiceImpl;
 
@@ -46,10 +46,13 @@ public class VennEvaluationApiResource {
         //svgImage.print();
         
         //Extract set information
-        SVG2VennTranslatePlatformService svg2VennTranslator = new SVG2VennTranslatePlatformServiceImpl();
+        SVG2VennTranslatePlatformService svg2VennTranslator = new SVG2VennTranslatePlatformServiceImplMulti();
         
         svg2VennTranslator.translate(vennDiagramStudentAnswer, svgImageStudentAnswer);
         svg2VennTranslator.translate(vennDiagramModelAnswer, svgImageModelAnswer);
+        
+        vennDiagramModelAnswer.print();
+        vennDiagramStudentAnswer.print();
         
         //Parse the Rubric
         MarkingRubricReadPlatformService rubricReader = new MarkingRubricReadPlatformServiceImpl();
@@ -59,8 +62,11 @@ public class VennEvaluationApiResource {
         EvaluationPlatformService evaluator = new EvaluationPlatformServiceImpl();
         evaluator.evaluate(vennDiagramStudentAnswer, question, vennDiagramModelAnswer, markingRubric, feedback);
         
+        System.out.println(feedback);
+        
         //Export results
         ResultExportPlatformService resultExporter = new ResultExportPlatformServiceImpl();
-        resultExporter.exportXML(feedback);
+        //resultExporter.exportText(resultsPath, feedback);
+        resultExporter.exportXML(resultsPath, feedback);
     }
 }

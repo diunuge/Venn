@@ -6,6 +6,7 @@ public class Feedback {
 	String questionId;
 	String questionType;
 	int totalMarks;
+	ArrayList<String> questionFeddbacks;
 	ArrayList<FeedbackSubQuestion> subquestionFeddbacks;
 	
 	public Feedback(){
@@ -27,6 +28,17 @@ public class Feedback {
 	
 	public void setTotalMarks(int totalMarks){
 		this.totalMarks = totalMarks;
+	}
+	
+	public void addQuestionFeedback(String feedback){
+		if(questionFeddbacks==null)
+			questionFeddbacks = new ArrayList<>();
+		
+		questionFeddbacks.add(feedback);
+	}
+	
+	public ArrayList<String> getQuestionFeedbacks(){
+		return this.questionFeddbacks;
 	}
 	
 	public void addSubQuestion(FeedbackSubQuestion subQuestion){
@@ -73,17 +85,32 @@ public class Feedback {
 		feedback += "Question Type:\t\"" + this.questionType + "\"\n";
 		feedback += "Question id:\t\"" + this.questionId + "\"\n";
 		feedback += "Total Marks:\t" + this.totalMarks + "\n\n";
-		
-		for(FeedbackSubQuestion subFeddback: subquestionFeddbacks){
 
-			feedback += "Sub Question: \"" + subFeddback.subQuestionId + "\"\n";
-			feedback += "\tMarks: " + subFeddback.marks + "\n";
+		if(questionFeddbacks!=null){
+
+			feedback += "=== Generic feedbacks ===\n\n";
 			
-			if(subFeddback.feedbacks!=null)
-				feedback += "\tFeedbacks; \n";
+			for(String feeddback: questionFeddbacks){
+				feedback += "\t" + feeddback + "\n";
+			}
+		}
+		
+		if(subquestionFeddbacks!=null){
+
+			feedback += "=== Subquestion feedbacks ===\n\n";
 			
-			for (String subFeedbackStr: subFeddback.feedbacks){
-				feedback += "\t\t# "+ subFeedbackStr +"\n";
+			for(FeedbackSubQuestion subFeeddback: subquestionFeddbacks){
+	
+				feedback += "Sub Question: \"" + subFeeddback.subQuestionId + "\"\n";
+				feedback += "\tMarks: " + subFeeddback.marks + "\n";
+				
+				if(subFeeddback.feedbacks!=null){
+					feedback += "\tFeedbacks; \n";
+				
+					for (String subFeedbackStr: subFeeddback.feedbacks){
+						feedback += "\t\t# "+ subFeedbackStr +"\n";
+					}
+				}
 			}
 		}
 		

@@ -12,6 +12,8 @@ import exameval.domain.feedback.Feedback;
  */
 public interface ResultExportPlatformService {
 
-    public void exportXML(Feedback feedback);
+    public void exportXML(String fileName, Feedback feedback);
+    
+    public void exportText(String fileName, Feedback feedback);
     
 }

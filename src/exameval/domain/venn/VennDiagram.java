@@ -61,7 +61,7 @@ public class VennDiagram {
     }
     
     public void print(){
-        System.out.println("\n\n"+this.name + "Venn Diagram\n");
+        System.out.println("\n\n"+this.name + " Venn Diagram\n");
         
         System.out.println("No of sets: "+ this.noOfSets);
         
@@ -74,10 +74,12 @@ public class VennDiagram {
         for (int i = 0; i < zones.size(); i++){
             zones.get(i).print();
         }
+        
+        System.out.println("\n\n");
     }
     
     public void printDebug(){
-        System.out.println("\n\n"+this.name + "Venn Diagram\n");
+        System.out.println("\n\n"+this.name + " Venn Diagram\n");
         
         System.out.println("No of sets: "+ this.noOfSets);
         
@@ -90,5 +92,7 @@ public class VennDiagram {
         for (int i = 0; i < zones.size(); i++){
             zones.get(i).printDebug();
         }
+        
+        System.out.println("\n\n");
     }
 }

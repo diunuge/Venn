@@ -13,6 +13,7 @@ public class SVGText  extends SVGObject {
     private double x;
     private double y;
     private String text;
+    private int fontSize;
     private boolean isNumeric;
     private Double numericValue;
     
@@ -22,10 +23,11 @@ public class SVGText  extends SVGObject {
     //private String fontSize;
     
     
-    public SVGText(double x, double y, String text){
+    public SVGText(double x, double y, String text, int fontSize){
         this.x = x;
         this.y = y;
         this.text = text;
+        this.fontSize = fontSize;
         
         if(_isNumeric()){
             this.isNumeric = true;
@@ -38,11 +40,24 @@ public class SVGText  extends SVGObject {
     }
     
     public double getX(){
-        return this.x;
+    	//Average length of a character is a 13 with font size 24 with "Helvetica" font family
+
+    	double correction = fontSize*text.length()*0.54/2;
+        return this.x + correction;
     }
     
     public double getY(){
-        return this.y;
+    	//Average correction is a 11.5/24 with font size 24 with "Helvetica" font family
+    	double correction = fontSize*0.48;
+        return this.y - correction;
+    }
+    
+    public double getHeight(){
+    	return fontSize/0.48;
+    }
+    
+    public double getWitdh(){
+    	return fontSize*text.length()*0.54;
     }
     
     public String getText(){

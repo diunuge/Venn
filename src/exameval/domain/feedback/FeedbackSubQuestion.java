@@ -27,4 +27,12 @@ public class FeedbackSubQuestion {
 	public int getMarks(){
 		return this.marks;
 	}
+	
+	public String getSubQuestionId(){
+		return this.subQuestionId;
+	}
+	
+	public ArrayList<String> getSubQuestionFeedbacks(){
+		return this.feedbacks;
+	}
 }

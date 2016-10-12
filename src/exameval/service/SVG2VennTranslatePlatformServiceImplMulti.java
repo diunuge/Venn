@@ -17,7 +17,7 @@ import java.util.ArrayList;
  *
  * @author Diunuge
  */
-public class SVG2VennTranslatePlatformServiceImpl implements SVG2VennTranslatePlatformService {
+public class SVG2VennTranslatePlatformServiceImplMulti implements SVG2VennTranslatePlatformService {
 
     @Override
     public void translate(VennDiagram vennDiagram, SVGImage svgImage) {
@@ -49,20 +49,23 @@ public class SVG2VennTranslatePlatformServiceImpl implements SVG2VennTranslatePl
                 }
             }
             
-            //Find Set Labels
-            int tolerence = 30;
+          //Find Set Labels
+            int tolerence = 10;
             
             SVGText[] SetLabels = new SVGText[numOfSets];
+            ArrayList<SVGText> SetLabelsAssigned = new ArrayList<SVGText>();
             
-            for (int setNo=0; setNo<numOfSets; setNo++){
+            for (int i=0; i<numOfSets; i++){
                 for (int j=0; j<nominalTexts.size(); j++){
                     
                     SVGText text = nominalTexts.get(j);
-                    if(sets.get(setNo).isCloseToBoundry(text.getX(), text.getY(), tolerence))
+                    
+                    //System.out.println("Distance from "+text.getText()+" to Ellipse "+ i + "is :"+ sets.get(i).getDistance(text.getX(), text.getY()));
+                    if(sets.get(i).isCloseToBoundry(text.getX(), text.getY(), tolerence))
                     {
                         boolean valid = true;
                         for (int k=0; k<numOfSets; k++){
-                            if(k==setNo)
+                            if(k==i)
                                 continue;
                             
                             if(sets.get(k).isCloseToBoundry(text.getX(), text.getY(), tolerence)){
@@ -71,13 +74,62 @@ public class SVG2VennTranslatePlatformServiceImpl implements SVG2VennTranslatePl
                             }
                         }
                         
-                        // TODO fix for override
-                        if(valid){ 
-                            SetLabels[setNo] = text;
+                        if(valid){
+                            SetLabels[i] = text;
+                            SetLabelsAssigned.add(text);
                             break;
                         }
                     }
                 }
+            }
+            
+
+            ArrayList<SVGText> nominalTextsRemained = new ArrayList<SVGText>(nominalTexts);
+            if(SetLabelsAssigned.size()<numOfSets){
+            	for (int i=0; i<SetLabelsAssigned.size(); i++){
+            		nominalTextsRemained.remove(SetLabelsAssigned.get(i));
+            	}
+            }
+            
+            //Increase the tolerence & search again
+            tolerence = 15;
+            for (int i=0; i<numOfSets; i++){
+            	
+            	if(SetLabels[i]!=null){
+            		continue;
+            	}
+            	
+                for (int j=0; j<nominalTextsRemained.size(); j++){
+                    
+                    SVGText text = nominalTextsRemained.get(j);
+                    if(sets.get(i).isCloseToBoundry(text.getX(), text.getY(), tolerence))
+                    {
+                        boolean valid = true;
+                        for (int k=0; k<numOfSets; k++){
+                            if(k==i)
+                                continue;
+                            
+                            if(sets.get(k).isCloseToBoundry(text.getX(), text.getY(), tolerence)){
+                                valid = false;
+                                break;
+                            }
+                        }
+                        
+                        if(valid){
+                            SetLabels[i] = text;
+                            SetLabelsAssigned.add(text);
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            //Assign generated label
+            for (int i=0; i<numOfSets; i++){
+            	
+            	if(SetLabels[i]==null){
+            		SetLabels[i] = new SVGText(0, 0, "Unlabeled_"+i, 0);
+            	}
             }
             
             for (int i=0; i<2; i++){
@@ -165,69 +217,18 @@ public class SVG2VennTranslatePlatformServiceImpl implements SVG2VennTranslatePl
             }
             
             //Text Association building
-            for (int i=1; i<vennZones.size(); i++){ //Exclude the first venn area 0.0.0
-                VennZone vennZone = vennZones.get(i);
-                
-                if(!vennZone.isValid())
-                    continue;
-                
-                for (int j=0; j<textsWithinZones.size(); j++){
-                    
-                    SVGText text = textsWithinZones.get(j);
-                    if(Coordinate2D.getDistance(text.getX(), text.getY(),
-                            vennZone.getCentroid().getX(), vennZone.getCentroid().getY()) < 30 ) //10 pixels from centroid
-                    {
-                        vennZone.setValue(text.getText());
-                        textsWithinZones.remove(j);
-                        break;                    
-                    }
-                }
+            int[][] textAssociationWithSets = new int[2][textsWithinZones.size()];
+            
+            for (int i=0; i<textsWithinZones.size(); i++){
+            	SVGText text = textsWithinZones.get(i);
+            	textAssociationWithSets[0][i] = sets.get(0).isIn(text.getX(),text.getY())?1:0;
+            	textAssociationWithSets[1][i] = sets.get(1).isIn(text.getX(),text.getY())?1:0;
             }
             
-            // TODO Fix
-            for (int i=1; i<vennZones.size(); i++){ //Exclude the first venn area 0.0.0
-                VennZone vennZone = vennZones.get(i);
-                
-                if(!vennZone.isValid())
-                    continue;
-                
-                if(vennZone.getVennValue()!=null)
-                    continue;
-                
-                for (int j=0; j<textsWithinZones.size(); j++){
-                    
-                    SVGText text = textsWithinZones.get(j);
-                    if(Coordinate2D.getDistance(text.getX(), text.getY(),
-                            vennZone.getCentroid().getX(), vennZone.getCentroid().getY()) < 200 ) //30 pixels from centroid
-                    {
-                        vennZone.setValue(text.getText());
-                        textsWithinZones.remove(j);
-                        break;                    
-                    }
-                }
-            }
-            
-            // TODO Fix
-            for (int i=0; i<vennZones.size(); i++){
-                VennZone vennZone = vennZones.get(i);
-                
-                if(!vennZone.isValid())
-                    continue;
-                
-                if(vennZone.getVennValue()!=null)
-                    continue;
-                
-                for (int j=0; j<textsWithinZones.size(); j++){
-                    
-                    SVGText text = textsWithinZones.get(j);
-                    if(Coordinate2D.getDistance(text.getX(), text.getY(),
-                            vennZone.getCentroid().getX(), vennZone.getCentroid().getY()) < 1000 ) //30 pixels from centroid
-                    {
-                        vennZone.setValue(text.getText());
-                        textsWithinZones.remove(j);
-                        break;                    
-                    }
-                }
+            for (int i=0; i<textsWithinZones.size(); i++){
+            	
+            	VennZone vennZone = vennZones.get(2*textAssociationWithSets[0][i]+textAssociationWithSets[1][i]);
+            	vennZone.setValue(textsWithinZones.get(i).getText());
             }
                   
             // 
@@ -267,6 +268,7 @@ public class SVG2VennTranslatePlatformServiceImpl implements SVG2VennTranslatePl
             
         } // End of set 2 implementation
         
+        //========================= Set 3 implementation ======================
         if(numOfSets==3){
             for (int i=0; i<2; i++){
                 for (int j=0; j<2; j++){
@@ -279,14 +281,17 @@ public class SVG2VennTranslatePlatformServiceImpl implements SVG2VennTranslatePl
             
             
             //Find Set Labels
-            int tolerence = 30;
+            int tolerence = 10;
             
             SVGText[] SetLabels = new SVGText[numOfSets];
+            ArrayList<SVGText> SetLabelsAssigned = new ArrayList<SVGText>();
             
             for (int i=0; i<numOfSets; i++){
                 for (int j=0; j<nominalTexts.size(); j++){
                     
                     SVGText text = nominalTexts.get(j);
+                    
+                    //System.out.println("Distance from "+text.getText()+" to Ellipse "+ i + "is :"+ sets.get(i).getDistance(text.getX(), text.getY()));
                     if(sets.get(i).isCloseToBoundry(text.getX(), text.getY(), tolerence))
                     {
                         boolean valid = true;
@@ -302,11 +307,62 @@ public class SVG2VennTranslatePlatformServiceImpl implements SVG2VennTranslatePl
                         
                         if(valid){
                             SetLabels[i] = text;
+                            SetLabelsAssigned.add(text);
                             break;
                         }
                     }
                 }
             }
+            
+
+            ArrayList<SVGText> nominalTextsRemained = new ArrayList<SVGText>(nominalTexts);
+            if(SetLabelsAssigned.size()<numOfSets){
+            	for (int i=0; i<SetLabelsAssigned.size(); i++){
+            		nominalTextsRemained.remove(SetLabelsAssigned.get(i));
+            	}
+            }
+            
+            //Increase the tolerence & search again
+            tolerence = 15;
+            for (int i=0; i<numOfSets; i++){
+            	
+            	if(SetLabels[i]!=null){
+            		continue;
+            	}
+            	
+                for (int j=0; j<nominalTextsRemained.size(); j++){
+                    
+                    SVGText text = nominalTextsRemained.get(j);
+                    if(sets.get(i).isCloseToBoundry(text.getX(), text.getY(), tolerence))
+                    {
+                        boolean valid = true;
+                        for (int k=0; k<numOfSets; k++){
+                            if(k==i)
+                                continue;
+                            
+                            if(sets.get(k).isCloseToBoundry(text.getX(), text.getY(), tolerence)){
+                                valid = false;
+                                break;
+                            }
+                        }
+                        
+                        if(valid){
+                            SetLabels[i] = text;
+                            SetLabelsAssigned.add(text);
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            //Assign generated label
+            for (int i=0; i<numOfSets; i++){
+            	
+            	if(SetLabels[i]==null){
+            		SetLabels[i] = new SVGText(0, 0, "Unlabeled_"+i, 0);
+            	}
+            }
+            
             
             for (int i=0; i<2; i++){
                 for (int j=0; j<2; j++){
@@ -416,69 +472,19 @@ public class SVG2VennTranslatePlatformServiceImpl implements SVG2VennTranslatePl
             }
             
             //Text Association building
-            for (int i=1; i<vennZones.size(); i++){ //Exclude the first venn area 0.0.0
-                VennZone vennZone = vennZones.get(i);
-                
-                if(!vennZone.isValid())
-                    continue;
-                
-                for (int j=0; j<textsWithinZones.size(); j++){
-                    
-                    SVGText text = textsWithinZones.get(j);
-                    if(Coordinate2D.getDistance(text.getX(), text.getY(),
-                            vennZone.getCentroid().getX(), vennZone.getCentroid().getY()) < 30 ) //10 pixels from centroid
-                    {
-                        vennZone.setValue(text.getText());
-                        textsWithinZones.remove(j);
-                        break;                    
-                    }
-                }
+            int[][] textAssociationWithSets = new int[3][textsWithinZones.size()];
+            
+            for (int i=0; i<textsWithinZones.size(); i++){
+            	SVGText text = textsWithinZones.get(i);
+            	textAssociationWithSets[0][i] = sets.get(0).isIn(text.getX(),text.getY())?1:0;
+            	textAssociationWithSets[1][i] = sets.get(1).isIn(text.getX(),text.getY())?1:0;
+            	textAssociationWithSets[2][i] = sets.get(2).isIn(text.getX(),text.getY())?1:0;
             }
             
-            // TODO Fix
-            for (int i=1; i<vennZones.size(); i++){ //Exclude the first venn area 0.0.0
-                VennZone vennZone = vennZones.get(i);
-                
-                if(!vennZone.isValid())
-                    continue;
-                
-                if(vennZone.getVennValue()!=null)
-                    continue;
-                
-                for (int j=0; j<textsWithinZones.size(); j++){
-                    
-                    SVGText text = textsWithinZones.get(j);
-                    if(Coordinate2D.getDistance(text.getX(), text.getY(),
-                            vennZone.getCentroid().getX(), vennZone.getCentroid().getY()) < 200 ) //30 pixels from centroid
-                    {
-                        vennZone.setValue(text.getText());
-                        textsWithinZones.remove(j);
-                        break;                    
-                    }
-                }
-            }
-            
-            // TODO Fix
-            for (int i=0; i<vennZones.size(); i++){
-                VennZone vennZone = vennZones.get(i);
-                
-                if(!vennZone.isValid())
-                    continue;
-                
-                if(vennZone.getVennValue()!=null)
-                    continue;
-                
-                for (int j=0; j<textsWithinZones.size(); j++){
-                    
-                    SVGText text = textsWithinZones.get(j);
-                    if(Coordinate2D.getDistance(text.getX(), text.getY(),
-                            vennZone.getCentroid().getX(), vennZone.getCentroid().getY()) < 1000 ) //30 pixels from centroid
-                    {
-                        vennZone.setValue(text.getText());
-                        textsWithinZones.remove(j);
-                        break;                    
-                    }
-                }
+            for (int i=0; i<textsWithinZones.size(); i++){
+            	
+            	VennZone vennZone = vennZones.get(4*textAssociationWithSets[0][i]+2*textAssociationWithSets[1][i]+textAssociationWithSets[2][i]);
+            	vennZone.setValue(textsWithinZones.get(i).getText());
             }
                         
             for (int i=0; i<textsOnBoundaries.size(); i++){
@@ -530,8 +536,6 @@ public class SVG2VennTranslatePlatformServiceImpl implements SVG2VennTranslatePl
                     vennZone.setValidity(true);
                     vennZones.add(vennZone);
                 }
-                
-                
                 
             }
             

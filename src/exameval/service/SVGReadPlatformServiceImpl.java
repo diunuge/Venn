@@ -44,15 +44,15 @@ public class SVGReadPlatformServiceImpl implements SVGReadPlatformService{
         NodeList list;
         try {
             
-            list = (NodeList)xPath.evaluate("//type", source, XPathConstants.NODESET);
-            
-            List<Element> title = new ArrayList<>(list.getLength());
-            for (int i = 0; i < list.getLength(); i++)
-            {
-                title.add((Element)list.item(i));
-                String text = title.get(0).getTextContent();
-                System.out.print(text);
-            }
+//            list = (NodeList)xPath.evaluate("//type", source, XPathConstants.NODESET);
+//            
+//            List<Element> title = new ArrayList<>(list.getLength());
+//            for (int i = 0; i < list.getLength(); i++)
+//            {
+//                title.add((Element)list.item(i));
+//                String text = title.get(0).getTextContent();
+//                System.out.print(text);
+//            }
             
             source = new InputSource(new StringReader(svgFile));
             list = (NodeList)xPath.evaluate("//ellipse", source, XPathConstants.NODESET);
@@ -82,7 +82,7 @@ public class SVGReadPlatformServiceImpl implements SVGReadPlatformService{
             }
             
             source = new InputSource(new StringReader(svgFile));
-            list = (NodeList)xPath.evaluate("svg", source, XPathConstants.NODESET);
+            list = (NodeList)xPath.evaluate("/svg", source, XPathConstants.NODESET);
             Element svg = (Element)list.item(0);
             svgImage.setSize(
                     Integer.parseInt(svg.getAttribute("height")),
@@ -131,7 +131,8 @@ public class SVGReadPlatformServiceImpl implements SVGReadPlatformService{
                 
                 SVGText text = new SVGText(Double.parseDouble(textElement.getAttribute("x")),
                         Double.parseDouble(textElement.getAttribute("y")),
-                        textElement.getTextContent());
+                        textElement.getTextContent(),
+                        Integer.parseInt(textElement.getAttribute("font-size")));
                 
                 svgImage.addText(text);
             }
@@ -172,14 +173,14 @@ public class SVGReadPlatformServiceImpl implements SVGReadPlatformService{
             svgFile = sb.toString();
         } 
         catch(java.io.IOException ex){
-            
+        	Logger.getLogger(SVGReadPlatformServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         finally {
-            try {
-                br.close();
-            } catch (IOException ex) {
-                Logger.getLogger(SVGReadPlatformServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//            try {
+//                br.close();
+//            } catch (IOException ex) {
+//                Logger.getLogger(SVGReadPlatformServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+//            }
         }
            
         return svgFile;
