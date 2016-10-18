@@ -14,6 +14,7 @@ public class SVGImage {
     private ArrayList<SVGRectangle> rectangles;
     private ArrayList<SVGEllipse> ellipses;
     private ArrayList<SVGCircle> circles;
+    private ArrayList<SVGLine> lines;
     private ArrayList<SVGText> texts;
     
     public SVGImage(){
@@ -24,6 +25,7 @@ public class SVGImage {
         this.rectangles = new ArrayList<>();
         this.ellipses = new ArrayList<>();
         this.circles = new ArrayList<>();
+        this.lines = new ArrayList<>();
         this.texts = new ArrayList<>();
     }
     
@@ -52,6 +54,10 @@ public class SVGImage {
         this.circles.add(circle);
     }
     
+    public void addLine(SVGLine line){
+        this.lines.add(line);
+    }
+    
     public void addText(SVGText text){
         this.texts.add(text);
     }
@@ -66,6 +72,10 @@ public class SVGImage {
     
     public int getNumOfCircles(){
         return this.circles.size();
+    }
+    
+    public int getNumOfLines(){
+        return this.lines.size();
     }
     
     public int getNumOfTexts(){
@@ -84,6 +94,10 @@ public class SVGImage {
         return this.circles;
     }
     
+    public ArrayList<SVGLine> getLines(){
+        return this.lines;
+    }
+    
     public ArrayList<SVGText> getTexts(){
         return this.texts;
     }
@@ -100,6 +114,11 @@ public class SVGImage {
         System.out.println("No of Ellipses: " + ellipses.size());
         for (int i = 0; i < ellipses.size(); i++){
             ellipses.get(i).print();
+        }
+        
+        System.out.println("No of Lines: " + lines.size());
+        for (int i = 0; i < lines.size(); i++){
+            lines.get(i).print();
         }
         
         System.out.println("No of Texts: " + texts.size());

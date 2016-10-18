@@ -45,7 +45,13 @@ public class SVGRectangle extends SVGObject {
 
     @Override
     public boolean isIn(double x, double y) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        boolean check = false;
+        if(x>=this.x && x<=this.x+this.width){
+        	if(y>=this.y && y<=this.y+this.height){
+        		check = true;
+        	}
+        }
+        return check;
     }
     
     @Override

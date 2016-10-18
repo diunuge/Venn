@@ -144,7 +144,7 @@ public class EvaluationPlatformServiceImpl implements EvaluationPlatformService{
     									isZoneMatched = true;
     									
     									VennZone zoneAnswer = svgImageStudentAnswer.getZone(zoneIndex);
-    									if((markDataZone.getLabel().equals(zoneAnswer.getVennValue().getValue())
+    									if((markDataZone.getLabel().equals(zoneAnswer.getValue())
     											|| markDataZone.getLabel().equals("ignore"))
     											&&
     											(markDataZone.getColor().equals(zoneAnswer.getColor())
@@ -155,14 +155,14 @@ public class EvaluationPlatformServiceImpl implements EvaluationPlatformService{
     										check = false;
     										
     										//Add feedbacks
-    										if(!markDataZone.getLabel().equals(zoneAnswer.getVennValue().getValue()) 
+    										if(!markDataZone.getLabel().equals(zoneAnswer.getValue()) 
     												&& !markDataZone.getLabel().equals("ignore")){
     											//Labels are not matching
-    											if(zoneAnswer.getVennValue().getValue()==null)
+    											if(zoneAnswer.getValue()==null)
     												feedbackSubQ.addFeedback("No label present at the zone "+zoneAnswer.getIdentifire());
     											else{
     												feedbackSubQ.addFeedback("Label present at the zone \'"+zoneAnswer.getIdentifire()
-    														+ "\' should be corrected to " + markDataZone.getLabel()+ ", instead of "+zoneAnswer.getVennValue().getValue());
+    														+ "\' should be corrected to " + markDataZone.getLabel()+ ", instead of "+zoneAnswer.getValue());
     												
     											}
     											
@@ -251,7 +251,7 @@ public class EvaluationPlatformServiceImpl implements EvaluationPlatformService{
     									isZoneMatched = true;
     									
     									VennZone zoneAnswer = svgImageStudentAnswer.getZone(zoneIndex);
-    									if((markDataZone.getLabel().equals(zoneAnswer.getVennValue().getValue())
+    									if((markDataZone.getLabel().equals(zoneAnswer.getValue())
     											|| markDataZone.getLabel().equals("ignore"))
     											&&
     											(markDataZone.getColor().equals(zoneAnswer.getColor())
@@ -263,14 +263,14 @@ public class EvaluationPlatformServiceImpl implements EvaluationPlatformService{
     									else{
     										
     										//Add feedbacks
-    										if(!markDataZone.getLabel().equals(zoneAnswer.getVennValue().getValue()) 
+    										if(!markDataZone.getLabel().equals(zoneAnswer.getValue()) 
     												&& !markDataZone.getLabel().equals("ignore")){
     											//Labels are not matching
-    											if(zoneAnswer.getVennValue().getValue()==null)
+    											if(zoneAnswer.getValue()==null)
     												feedbackSubQ.addFeedback("No label present at the zone "+zoneAnswer.getIdentifire());
     											else{
     												feedbackSubQ.addFeedback("Label present at the zone \'"+zoneAnswer.getIdentifire()
-    														+ "\' should be corrected to " + markDataZone.getLabel()+ ", instead of "+zoneAnswer.getVennValue().getValue());
+    														+ "\' should be corrected to " + markDataZone.getLabel()+ ", instead of "+zoneAnswer.getValue());
     												
     											}
     											

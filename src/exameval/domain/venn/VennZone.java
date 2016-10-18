@@ -31,6 +31,13 @@ public class VennZone {
         return this.identifire;
     }
     
+    public String getValue(){
+    	if(this.value == null)
+    		return null;
+    	else
+    		return this.value.getValue();
+    }
+    
     public VennValue getVennValue(){
         return this.value;
     }

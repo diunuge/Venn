@@ -3,6 +3,7 @@ package exameval.service;
 import exameval.ExamEval;
 import exameval.domain.svg.SVGEllipse;
 import exameval.domain.svg.SVGImage;
+import exameval.domain.svg.SVGLine;
 import exameval.domain.svg.SVGRectangle;
 import exameval.domain.svg.SVGText;
 import java.io.BufferedReader;
@@ -44,15 +45,13 @@ public class SVGReadPlatformServiceImpl implements SVGReadPlatformService{
         NodeList list;
         try {
             
-//            list = (NodeList)xPath.evaluate("//type", source, XPathConstants.NODESET);
-//            
-//            List<Element> title = new ArrayList<>(list.getLength());
-//            for (int i = 0; i < list.getLength(); i++)
-//            {
-//                title.add((Element)list.item(i));
-//                String text = title.get(0).getTextContent();
-//                System.out.print(text);
-//            }
+            list = (NodeList)xPath.evaluate("//line", source, XPathConstants.NODESET);
+            
+            List<Element> lines = new ArrayList<>(list.getLength());
+            for (int i = 0; i < list.getLength(); i++)
+            {
+            	lines.add((Element)list.item(i));
+            }
             
             source = new InputSource(new StringReader(svgFile));
             list = (NodeList)xPath.evaluate("//ellipse", source, XPathConstants.NODESET);
@@ -94,6 +93,21 @@ public class SVGReadPlatformServiceImpl implements SVGReadPlatformService{
             //System.out.println("No of Texts: " + texts.size());
             
             //svgImage = new SVGImage();
+            for (int i = 0; i < lines.size(); i++)
+            {
+                Element lineElement = lines.get(i);
+                //System.out.println(rectangles.get(i).getAttribute("width"));
+                //System.out.println(rectangles.get(i).getTagName());
+                
+                SVGLine line = new SVGLine(Double.parseDouble(lineElement.getAttribute("x1")),
+                        Double.parseDouble(lineElement.getAttribute("y1")),
+                        Double.parseDouble(lineElement.getAttribute("x2")),
+                        Double.parseDouble(lineElement.getAttribute("y2")));
+                
+                svgImage.addLine(line);
+            }
+            
+            
             for (int i = 0; i < rectangles.size(); i++)
             {
                 Element rectangleElement = rectangles.get(i);

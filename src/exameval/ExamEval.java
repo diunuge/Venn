@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 /**
  *
  * @author Diunuge
@@ -35,6 +37,10 @@ public class ExamEval {
     public static void main(String[] args) {
         
         ExamEval eval = new ExamEval();
+        
+        //String temp = "hi&#3515;&#3501;&#3540; &#3508;&#3537;&#3505;&#3530;";
+        //String str = StringEscapeUtils.unescapeHtml4(temp) ;
+        //System.out.println(str);
         
         if(true){
     		

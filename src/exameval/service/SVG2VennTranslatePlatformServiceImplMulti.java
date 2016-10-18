@@ -7,6 +7,8 @@ package exameval.service;
 import exameval.domain.coordinate.Coordinate2D;
 import exameval.domain.svg.SVGEllipse;
 import exameval.domain.svg.SVGImage;
+import exameval.domain.svg.SVGLine;
+import exameval.domain.svg.SVGRectangle;
 import exameval.domain.svg.SVGText;
 import exameval.domain.venn.VennZone;
 import exameval.domain.venn.VennDiagram;
@@ -26,15 +28,23 @@ public class SVG2VennTranslatePlatformServiceImplMulti implements SVG2VennTransl
         int numOfVennAreas = (int)Math.pow(2, numOfSets);
         
         //only considering Ellipses as sets
+        ArrayList<SVGRectangle> universal_set = svgImage.getRectangles();
+        ArrayList<SVGLine> arrows = svgImage.getLines();
         ArrayList<SVGEllipse> sets = svgImage.getEllipses();
         ArrayList<SVGText> texts = svgImage.getTexts();
         
         ArrayList<SVGText> nominalTexts = new ArrayList<>();
+        ArrayList<SVGText> possibleArrowLabels = new ArrayList<>();
         
         for (int i = 0; i < texts.size(); i++)
         {
-            if(!texts.get(i).isNumeric())
+            if(!texts.get(i).isNumeric()){
                 nominalTexts.add(texts.get(i));
+                
+                if(!universal_set.get(0).isIn(texts.get(i).getX(), texts.get(i).getY())){
+                	possibleArrowLabels.add(texts.get(i));
+                }
+            }
         }
         
         //construct venn areas
@@ -49,13 +59,124 @@ public class SVG2VennTranslatePlatformServiceImplMulti implements SVG2VennTransl
                 }
             }
             
-          //Find Set Labels
-            int tolerence = 10;
-            
+            //Find Set Labels
+            int tolerence = 20;
             SVGText[] SetLabels = new SVGText[numOfSets];
             ArrayList<SVGText> SetLabelsAssigned = new ArrayList<SVGText>();
             
+            SVGLine [] associationArrows = new SVGLine [numOfSets];
+            
+            if(arrows.size()>0){
+            	//Arrow labeled
+            	for (int i=0; i<numOfSets; i++){
+            		for (int j=0; j<arrows.size(); j++){
+            			
+            			SVGLine arrow = arrows.get(j);
+                        
+                        //System.out.println("Distance from "+text.getText()+" to Ellipse "+ i + "is :"+ sets.get(i).getDistance(text.getX(), text.getY()));
+                        if(sets.get(i).isCloseToBoundry(arrow.getX1(), arrow.getY1(), tolerence)
+                        		||sets.get(i).isCloseToBoundry(arrow.getX2(), arrow.getY2(), tolerence))
+                        {
+                        	associationArrows[i] = arrow;
+                        }
+            		}
+            	}
+            }
+            
+            int arrowTolerence = 50;
             for (int i=0; i<numOfSets; i++){
+            	
+            	if(SetLabels[i]!=null)
+            		continue;
+            	
+            	if(associationArrows[i]!=null){
+            		//There is a associated arrow
+            		if(sets.get(i).isCloseToBoundry(associationArrows[i].getX1(), associationArrows[i].getY1(), tolerence)){
+            			//Find text near x2, y2
+            			for (int j=0; j<possibleArrowLabels.size(); j++){
+            				
+            				SVGText text = possibleArrowLabels.get(j);
+            				
+            				if(associationArrows[i].isCloseToEnd(
+            						text.getX(), 
+            						text.getY(), 
+            						arrowTolerence, 
+            						1)){
+            					SetLabels[i] = text;
+                                SetLabelsAssigned.add(text);
+            				}
+            			}
+            		}
+            		else{
+            			//Find text near x1, y1
+            			for (int j=0; j<possibleArrowLabels.size(); j++){
+            				
+            				SVGText text = possibleArrowLabels.get(j);
+            				
+            				if(associationArrows[i].isCloseToEnd(
+            						text.getX(), 
+            						text.getY(), 
+            						tolerence, 
+            						0)){
+            					SetLabels[i] = text;
+                                SetLabelsAssigned.add(text);
+            				}
+            			}
+            		}
+            	}
+            }
+
+            arrowTolerence = 100;
+            for (int i=0; i<numOfSets; i++){
+            	
+            	if(SetLabels[i]!=null)
+            		continue;
+            	
+            	if(associationArrows[i]!=null){
+            		//There is a associated arrow
+            		if(sets.get(i).isCloseToBoundry(associationArrows[i].getX1(), associationArrows[i].getY1(), tolerence)){
+            			//Find text near x2, y2
+            			for (int j=0; j<possibleArrowLabels.size(); j++){
+            				
+            				SVGText text = possibleArrowLabels.get(j);
+            				
+            				if(associationArrows[i].isCloseToEnd(
+            						text.getX(), 
+            						text.getY(), 
+            						arrowTolerence, 
+            						1)){
+            					SetLabels[i] = text;
+                                SetLabelsAssigned.add(text);
+            				}
+            			}
+            		}
+            		else{
+            			//Find text near x1, y1
+            			for (int j=0; j<possibleArrowLabels.size(); j++){
+            				
+            				SVGText text = possibleArrowLabels.get(j);
+            				
+            				if(associationArrows[i].isCloseToEnd(
+            						text.getX(), 
+            						text.getY(), 
+            						tolerence, 
+            						0)){
+            					SetLabels[i] = text;
+                                SetLabelsAssigned.add(text);
+            				}
+            			}
+            		}
+            	}
+            }
+            
+            tolerence = 10;
+            
+            for (int i=0; i<numOfSets; i++){
+
+            	if(SetLabels[i]!=null){
+            		continue;
+            	}
+            	
                 for (int j=0; j<nominalTexts.size(); j++){
                     
                     SVGText text = nominalTexts.get(j);
@@ -197,6 +318,12 @@ public class SVG2VennTranslatePlatformServiceImplMulti implements SVG2VennTransl
                         textRemains.remove(j);
                         break;
                     }
+                }
+            }
+            
+            for (int j=0; j<textRemains.size(); j++){
+                if(!universal_set.get(0).isIn(textRemains.get(j).getX(), textRemains.get(j).getY())){
+                    textRemains.remove(j);
                 }
             }
             

@@ -43,7 +43,7 @@ public class VennEvaluationApiResource {
         SVGReadPlatformService svgReader = new SVGReadPlatformServiceImpl();
         svgReader.parse(svgImageStudentAnswer, studentAnswerPath);
         svgReader.parse(svgImageModelAnswer, modelAnswerPath);
-        //svgImage.print();
+        svgImageStudentAnswer.print();
         
         //Extract set information
         SVG2VennTranslatePlatformService svg2VennTranslator = new SVG2VennTranslatePlatformServiceImplMulti();

@@ -50,6 +50,12 @@ public class SetNameCheck {
 //		setLabels2 = testLabels2;
 		
 		String[] labelPartsModel = zoneLabelModel.split("\\.");
+		String[] labelPartsAnswer = zoneLabelAnswer.split("\\.");
+		
+		if(labelPartsModel.length!=labelPartsAnswer.length){
+			return false;
+		}
+		
 		for(int i=0; i<setLabelsModel.size(); i++){
 			
 			for(int j=0; j<setLabelsModel.size(); j++){
@@ -63,8 +69,6 @@ public class SetNameCheck {
 				}
 			}
 		}
-
-		String[] labelPartsAnswer = zoneLabelAnswer.split("\\.");
 		
 		for(int i=0; i<setLabelsModel.size(); i++){
 			

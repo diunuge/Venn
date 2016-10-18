@@ -4,6 +4,8 @@
  */
 package exameval.domain.svg;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 /**
  *
  * @author Diunuge
@@ -27,6 +29,8 @@ public class SVGText  extends SVGObject {
         this.x = x;
         this.y = y;
         this.text = text;
+        //this.text = StringEscapeUtils.unescapeHtml4(text);
+        //System.out.println("Text :"+text+" Converted: "+this.text);
         this.fontSize = fontSize;
         
         if(_isNumeric()){
