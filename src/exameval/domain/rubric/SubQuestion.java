@@ -43,39 +43,35 @@ class SubQuestion {
         markSets.add(new MarkSet(id));        
     }
     
-    public void setMarkSetMarks(int marks, int markSetIndex){
-        markSets.get(markSetIndex).setMarks(marks);
+    public void setMarkSetTotalMarks(int totalMarks, int markSetIndex){
+        markSets.get(markSetIndex).setMarks(totalMarks);
     }
 
-    public void setMarkSetMarks(String method, int markSetIndex) {
-        markSets.get(markSetIndex).setMethod(method);
+    void addMarkSetElementZone(String zoneLabel, String zoneValue, String zoneColor, int markSetIndex, int markSetDataIndex) {
+        markSets.get(markSetIndex).addElementZone(zoneLabel, zoneValue, zoneColor, markSetDataIndex);
     }
 
-    void addMarkSetElementZone(String zoneLabel, String zoneValue, String zoneColor, int markSetIndex) {
-        markSets.get(markSetIndex).addElementZone(zoneLabel, zoneValue, zoneColor);
-    }
-
-    void addMarkSetElementSet(String setLabel, int markSetIndex) {
-        markSets.get(markSetIndex).addMarkSetElementSet(setLabel);
+    void addMarkSetElementSet(String setLabel, int markSetIndex, int markSetDataIndex) {
+        markSets.get(markSetIndex).addMarkSetElementSet(setLabel, markSetDataIndex);
     }
 
 	public int getNoOfMarkSets() {
 		return markSets.size();
 	}
 
-	public int getNoOfMarkSetElements(int markSetIndex) {
-		return markSets.get(markSetIndex).getNoOfElements();
+	public int getNoOfMarkSetDataElements(int markSetIndex, int markSetDataIndex) {
+		return markSets.get(markSetIndex).getNoOfElements(markSetDataIndex);
 	}
 
-	public String getMarkSetMethod(int markSetIndex) {
-		return markSets.get(markSetIndex).getMethod();
+	public String getMarkSetDataMethod(int markSetIndex, int markSetDataIndex) {
+		return markSets.get(markSetIndex).getDataMethod(markSetDataIndex);
 	}
 
-	public ArrayList<MarkData> getMarkDataSets(int markSetIndex) {
-		return markSets.get(markSetIndex).getMarkDataSets();
+	public ArrayList<MarkData> getMarkDataSets(int markSetIndex, int markSetDataIndex) {
+		return markSets.get(markSetIndex).getMarkDataSets(markSetDataIndex);
 	}
 	
-	public int getMarkSetMarks(int markSetIndex){
-		return markSets.get(markSetIndex).getMarks();
+	public int getMarkSetTotalMarks(int markSetIndex){
+		return markSets.get(markSetIndex).getTotalMarks();
 	}
 }

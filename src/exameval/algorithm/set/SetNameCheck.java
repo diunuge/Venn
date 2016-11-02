@@ -11,8 +11,13 @@ public class SetNameCheck {
 		for(int i=0; i<setLabelsModel.size(); i++){
 			
 			if(setName.equals(setLabelsModel.get(i))){
-				if(setLabelsAnswerArranged.get(i)=="null" && setLabelsAnswerArranged.get(i)=="Unlabeled"){
+				if(setLabelsAnswerArranged.get(i)=="null" ||
+						setLabelsAnswerArranged.get(i).toLowerCase().contains("unlabeled")){
 					check = false;
+					break;
+				}
+				else{
+					check = true;
 					break;
 				}
 			}
@@ -56,7 +61,7 @@ public class SetNameCheck {
 			return false;
 		}
 		
-		for(int i=0; i<setLabelsModel.size(); i++){
+		for(int i=0; i<labelPartsModel.length; i++){
 			
 			for(int j=0; j<setLabelsModel.size(); j++){
 				if (labelPartsModel[i].equals(setLabelsModel.get(j))){
@@ -70,15 +75,15 @@ public class SetNameCheck {
 			}
 		}
 		
-		for(int i=0; i<setLabelsModel.size(); i++){
+		for(int i=0; i<labelPartsModel.length; i++){
 			
-			for(int j=0; j<setLabelsModel.size(); j++){
+			for(int j=0; j<labelPartsAnswer.length; j++){
 				
 				if(labelPartsModel[i].equals(labelPartsAnswer[j])){
 					break;
 				}
 				
-				if(j == setLabelsModel.size()-1){
+				if(j == labelPartsAnswer.length-1){
 					check = false;
 				}
 			}

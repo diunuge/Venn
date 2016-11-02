@@ -6,6 +6,10 @@ public class StringCheck {
 		double totalSimilarity = 0;
 		double similarity = 0.0;
 		
+		if(str2.toLowerCase().contains("unlabeled")){
+			return 0.0;
+		}
+		
 		String[] tokens1 = str1.trim().split("\\s+|-|\\.");
 		String[] tokens2 = str2.trim().split("\\s+|-|\\.");
 		

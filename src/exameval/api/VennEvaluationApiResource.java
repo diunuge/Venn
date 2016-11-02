@@ -7,6 +7,10 @@ import exameval.domain.svg.SVGImage;
 import exameval.domain.venn.VennDiagram;
 import exameval.service.EvaluationPlatformService;
 import exameval.service.EvaluationPlatformServiceImpl;
+import exameval.service.FileHandlingPlatformService;
+import exameval.service.FileHandlingPlatformServiceImpl;
+import exameval.service.MarkingRubricExportPlatformService;
+import exameval.service.MarkingRubricExportPlatformServiceImpl;
 import exameval.service.MarkingRubricReadPlatformService;
 import exameval.service.MarkingRubricReadPlatformServiceImpl;
 import exameval.service.QuestionReadPlatformService;
@@ -51,7 +55,9 @@ public class VennEvaluationApiResource {
         svg2VennTranslator.translate(vennDiagramStudentAnswer, svgImageStudentAnswer);
         svg2VennTranslator.translate(vennDiagramModelAnswer, svgImageModelAnswer);
         
-        vennDiagramModelAnswer.print();
+        //vennDiagramModelAnswer.print();
+        FileHandlingPlatformService fileHandlingPlatformService = new FileHandlingPlatformServiceImpl();
+        System.out.println(fileHandlingPlatformService.xmlToJson(vennDiagramModelAnswer.toString(), 2));
         vennDiagramStudentAnswer.print();
         
         //Parse the Rubric
@@ -69,4 +75,35 @@ public class VennEvaluationApiResource {
         //resultExporter.exportText(resultsPath, feedback);
         resultExporter.exportXML(resultsPath, feedback);
     }
+	
+	public static String getVennDiagram(String svgPath){
+
+		String vennStr = "";
+
+        SVGImage svgImage = new SVGImage();        
+        VennDiagram vennDiagram = new VennDiagram("Untitled");
+        
+        SVGReadPlatformService svgReader = new SVGReadPlatformServiceImpl();
+        svgReader.parse(svgImage, svgPath);
+        
+        SVG2VennTranslatePlatformService svg2VennTranslator = new SVG2VennTranslatePlatformServiceImplMulti();
+        svg2VennTranslator.translate(vennDiagram, svgImage);
+
+		FileHandlingPlatformService fileHandlingPlatformService = new FileHandlingPlatformServiceImpl();
+        vennStr = fileHandlingPlatformService.xmlToJson(vennDiagram.toString(), 2);
+		
+		return vennStr;
+	}
+	
+	public static void exportVennDiagramJson(String vennStr, String filePath){
+		
+		FileHandlingPlatformService fileHandlingPlatformService = new FileHandlingPlatformServiceImpl();
+        fileHandlingPlatformService.stringToFile(vennStr, filePath);
+	}
+	
+	public static void exportRubricXML(String jsonStrRubric, String filePath){
+		
+		MarkingRubricExportPlatformService markingRubricExportPlatformService = new MarkingRubricExportPlatformServiceImpl();
+		markingRubricExportPlatformService.produceXMLfromJSON(jsonStrRubric, filePath);
+	}
 }

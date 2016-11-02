@@ -34,6 +34,8 @@ public class MarkingRubricReadPlatformServiceImpl implements MarkingRubricReadPl
         String svgFile = null;
         try {
             svgFile = readXMLFile(markingRubricPath);
+            //FileHandlingPlatformService fileHandlingPlatformService = new FileHandlingPlatformServiceImpl();
+            //System.out.println(fileHandlingPlatformService.xmlToJson(svgFile, 3));
         } catch (IOException ex) {
             Logger.getLogger(MarkingRubricReadPlatformServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -94,53 +96,80 @@ public class MarkingRubricReadPlatformServiceImpl implements MarkingRubricReadPl
                 {
                     Element tempItem = (Element)nodelListMarkSets.item(j);
                     if(tempItem!=null)
-                        elementMarkSets.add((Element)nodelListMarkSets.item(j));
+                        elementMarkSets.add(tempItem);
                 }
                 
                 for (int markSetIndex = 0; markSetIndex < elementMarkSets.size(); markSetIndex++)
                 {
                     markingRubric.addSubQuestionMarkSet(Integer.parseInt(elementMarkSets.get(markSetIndex).getAttribute("id")), subQuestionIndex);
-                    markingRubric.setSubQuestionMarkSetMarks(Integer.parseInt(elementMarkSets.get(markSetIndex).getAttribute("marks")), subQuestionIndex, markSetIndex);
-                    markingRubric.setSubQuestionMarkSetMethod(elementMarkSets.get(markSetIndex).getAttribute("method"), subQuestionIndex, markSetIndex);
+                    markingRubric.setSubQuestionMarkSetTotalMarks(Integer.parseInt(elementMarkSets.get(markSetIndex).getAttribute("totalMarks")), subQuestionIndex, markSetIndex);
+                    //markingRubric.setSubQuestionMarkSetMethod(elementMarkSets.get(markSetIndex).getAttribute("method"), subQuestionIndex, markSetIndex);
                     
                     source = new InputSource(new StringReader(svgFile));
-                    query = "//subQuestion[@id = \'"+subQuestions.get(subQuestionIndex).getAttribute("id")+"\']/markSet[@id = \'"+elementMarkSets.get(markSetIndex).getAttribute("id")+"\']/*";
-                    NodeList nodelListMarkSetElemets = (NodeList)xPath.evaluate(query, source, XPathConstants.NODESET);
-                    List<Element> elementMarkSetElements = new ArrayList<>(nodelListMarkSets.getLength());
-                    for (int j = 0; j < nodelListMarkSetElemets.getLength(); j++)
+                    query = "//subQuestion[@id = \'"+subQuestions.get(subQuestionIndex).getAttribute("id")+"\']/markSet[@id = \'"+elementMarkSets.get(markSetIndex).getAttribute("id")+"\']/data";
+                    NodeList nodelListMarkSetData = (NodeList)xPath.evaluate(query, source, XPathConstants.NODESET);
+                    List<Element> elementMarkSetData = new ArrayList<>(nodelListMarkSetData.getLength());
+                    
+                    for (int i = 0; i < nodelListMarkSetData.getLength(); i++)
                     {
-                        Element tempItem = (Element)nodelListMarkSetElemets.item(j);
+                        Element tempItem = (Element)nodelListMarkSetData.item(i);
                         if(tempItem!=null)
-                            elementMarkSetElements.add(tempItem);
+                        	elementMarkSetData.add(tempItem);
                     }
                     
-                    for (int markSetElementIndex = 0; markSetElementIndex < elementMarkSetElements.size(); markSetElementIndex++)
+                    for (int markSetDataIndex = 0; markSetDataIndex < elementMarkSetData.size(); markSetDataIndex++)
                     {
-                         
-                        if(elementMarkSetElements.get(markSetElementIndex).getTagName() == "zone"){
-                            
-                            Element label = (Element)elementMarkSetElements.get(markSetElementIndex).getElementsByTagName("label").item(0);
-                            Element value = (Element)elementMarkSetElements.get(markSetElementIndex).getElementsByTagName("value").item(0);
-                            Element color = (Element)elementMarkSetElements.get(markSetElementIndex).getElementsByTagName("color").item(0);
-                            
-                            markingRubric.addSubQuestionMarkSetElementZone(
-                                    label.getTextContent(),
-                                    value.getTextContent(), 
-                                    color.getTextContent(),
-                                    markSetIndex, 
-                                    subQuestionIndex); 
-                        }
-                        else if(elementMarkSetElements.get(markSetElementIndex).getTagName() == "set"){
-                            
-                            markingRubric.addSubQuestionMarkSetElementSet(
-                                    elementMarkSetElements.get(markSetElementIndex).getTextContent(),
-                                    markSetIndex, 
-                                    subQuestionIndex);
-                        }
+                    	markingRubric.addSubQuestionMarkSetData(Integer.parseInt(elementMarkSetData.get(markSetDataIndex).getAttribute("id")), subQuestionIndex, markSetIndex);
+                    	markingRubric.addSubQuestionMarkSetDataMarks(Integer.parseInt(elementMarkSetData.get(markSetDataIndex).getAttribute("marks")), subQuestionIndex, markSetIndex, markSetDataIndex);
+                    	markingRubric.addSubQuestionMarkSetDataMethod(elementMarkSetData.get(markSetDataIndex).getAttribute("method"), subQuestionIndex, markSetIndex, markSetDataIndex);
+                    	
+                    	source = new InputSource(new StringReader(svgFile));
+                        query = "//subQuestion[@id = \'"+subQuestions.get(subQuestionIndex).getAttribute("id")
+                        		+"\']/markSet[@id = \'"+elementMarkSets.get(markSetIndex).getAttribute("id")
+                        		+"\']/data[@id = \'"+elementMarkSetData.get(markSetDataIndex).getAttribute("id")
+                        		+"\']/*";
                         
-                    }
-                }
-            }
+                        NodeList nodelListMarkSetElemets = (NodeList)xPath.evaluate(query, source, XPathConstants.NODESET);
+	                    List<Element> elementMarkSetElements = new ArrayList<>(nodelListMarkSets.getLength());
+	                    
+						for (int j = 0; j < nodelListMarkSetElemets.getLength(); j++) {
+							Element tempItem = (Element) nodelListMarkSetElemets.item(j);
+							if (tempItem != null)
+								elementMarkSetElements.add(tempItem);
+						}
+					
+	                    
+	                    for (int markSetElementIndex = 0; markSetElementIndex < elementMarkSetElements.size(); markSetElementIndex++)
+	                    {
+	                         
+	                        if(elementMarkSetElements.get(markSetElementIndex).getTagName() == "zone"){
+	                            
+	                            Element label = (Element)elementMarkSetElements.get(markSetElementIndex).getElementsByTagName("label").item(0);
+	                            Element value = (Element)elementMarkSetElements.get(markSetElementIndex).getElementsByTagName("value").item(0);
+	                            Element color = (Element)elementMarkSetElements.get(markSetElementIndex).getElementsByTagName("color").item(0);
+	                            
+	                            markingRubric.addSubQuestionMarkSetElementZone(
+	                                    label.getTextContent(),
+	                                    value.getTextContent(), 
+	                                    color.getTextContent(),
+	                                    markSetDataIndex,
+	                                    markSetIndex, 
+	                                    subQuestionIndex); 
+	                        }
+	                        else if(elementMarkSetElements.get(markSetElementIndex).getTagName() == "set"){
+	                            
+	                            markingRubric.addSubQuestionMarkSetElementSet(
+	                                    elementMarkSetElements.get(markSetElementIndex).getTextContent(),
+	                                    markSetDataIndex,
+	                                    markSetIndex, 
+	                                    subQuestionIndex);
+	                        }
+	                        
+	                    }//added markset data elements
+                        
+                    }//Added mark set data
+                }//added markset
+            }//added sub question
             
         } catch (XPathExpressionException ex) {
             Logger.getLogger(SVGReadPlatformServiceImpl.class.getName()).log(Level.SEVERE, null, ex);

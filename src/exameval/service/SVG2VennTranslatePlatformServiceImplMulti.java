@@ -303,9 +303,9 @@ public class SVG2VennTranslatePlatformServiceImplMulti implements SVG2VennTransl
                 vennZones.get(i).validate();
                 
                 //debug
-                if(vennZones.get(i).isValid())
-                    System.out.println("Name : "+vennZones.get(i).getIdentifire()+"\tpixels : "+vennZones.get(i).numOfPixels()
-                            +"\tcentroid : ("+vennZones.get(i).getCentroid().getX()+","+vennZones.get(i).getCentroid().getY()+")");
+//                if(vennZones.get(i).isValid())
+//                    System.out.println("Name : "+vennZones.get(i).getIdentifire()+"\tpixels : "+vennZones.get(i).numOfPixels()
+//                            +"\tcentroid : ("+vennZones.get(i).getCentroid().getX()+","+vennZones.get(i).getCentroid().getY()+")");
             }
             
             //Filter text labels with values
@@ -367,11 +367,23 @@ public class SVG2VennTranslatePlatformServiceImplMulti implements SVG2VennTransl
                         && !vennSets.get(1).getSVGObject().isOnBoundry(text.getX(), text.getY()))
                 {
                     vennSets.get(0).setValue(text.getText());
+                    
+                    String zoneName = SetLabels[0].getText();
+                    VennZone vennZone = new VennZone(zoneName);
+                    vennZone.setValue(text.getText());
+                    vennZone.setValidity(true);
+                    vennZones.add(vennZone);
                 }
                 else if(!vennSets.get(0).getSVGObject().isOnBoundry(text.getX(), text.getY())
                         && vennSets.get(1).getSVGObject().isOnBoundry(text.getX(), text.getY()))
                 {
                     vennSets.get(1).setValue(text.getText());
+
+                    String zoneName = SetLabels[1].getText();
+                    VennZone vennZone = new VennZone(zoneName);
+                    vennZone.setValue(text.getText());
+                    vennZone.setValidity(true);
+                    vennZones.add(vennZone);
                 }
                 else if(vennSets.get(0).getSVGObject().isOnBoundry(text.getX(), text.getY())
                         && vennSets.get(1).getSVGObject().isOnBoundry(text.getX(), text.getY())
@@ -640,6 +652,7 @@ public class SVG2VennTranslatePlatformServiceImplMulti implements SVG2VennTransl
                         && vennSets.get(1).getSVGObject().isOnBoundry(text.getX(), text.getY())
                         && vennSets.get(2).getSVGObject().isOnBoundry(text.getX(), text.getY()))
                 {
+                	//TODO fix labels
                     VennZone vennZone = new VennZone("B.C");
                     vennZone.setValue(text.getText());
                     vennZone.setValidity(true);

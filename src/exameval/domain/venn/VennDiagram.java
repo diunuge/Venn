@@ -95,4 +95,47 @@ public class VennDiagram {
         
         System.out.println("\n\n");
     }
+    
+    
+    public String toString(){
+    	String result = "";
+    	
+    	result += "<infographic>\n";
+
+    	result += "\t<type>Venn Diagram</type>\n";
+    	result += "\t<title>"+this.name+"</title>\n";
+    	result += "\t<no_of_sets>"+this.noOfSets+"</no_of_sets>\n";
+    	
+    	result += "\t<sets>\n";
+    	for (int i = 0; i < sets.size(); i++){
+    		result += "\t\t<set>"+this.sets.get(i).getName()+"</set>\n";
+        }
+    	result += "\t</sets>\n";
+
+    	result += "\t<data_set>\n";
+    	for (int i = 0; i < zones.size(); i++){
+    		
+    		result += "\t\t<zone>";
+    		
+    		result += "<label>";
+    		result +=zones.get(i).getIdentifire()!=null?zones.get(i).getIdentifire():"none";
+    		result += "</label>";
+    		
+    		result += "<value>";
+    		result +=zones.get(i).getValue()!=null?zones.get(i).getValue():"none";
+    		result += "</value>";
+    		
+    		result += "<color>";
+    		result +=zones.get(i).getColor();
+    		result += "</color>";
+    		
+    		result += "</zone>\n";
+        }
+    	result += "\t</data_set>\n";
+
+    	result += "</infographic>\n";
+    	
+    	return result;
+    }
+    
 }

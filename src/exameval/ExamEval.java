@@ -15,12 +15,16 @@ import exameval.domain.svg.SVGText;
 import exameval.domain.venn.VennDiagram;
 import exameval.service.*;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.json.JSONObject;
+import org.json.XML;
 
 /**
  *
@@ -38,18 +42,22 @@ public class ExamEval {
         
         ExamEval eval = new ExamEval();
         
-        //String temp = "hi&#3515;&#3501;&#3540; &#3508;&#3537;&#3505;&#3530;";
-        //String str = StringEscapeUtils.unescapeHtml4(temp) ;
-        //System.out.println(str);
+        if(false){
+        	
+        	String markingSchemePath = "C:/wamp/www/demo/bin/rubric2.xml";
+        	MarkingRubricExportPlatformService markingRubricExportPlatformService = new MarkingRubricExportPlatformServiceImpl();
+        	markingRubricExportPlatformService.produceXMLfromJSON("", markingSchemePath);
+        }
         
         if(true){
-    		
+            
     		String studentAnswerPath  = "C:/wamp/www/demo/bin/answer_min.svg";
         	String questionPath  = "C:/wamp/www/demo/bin/question.xml";
         	String modelAnswerPath  = "C:/wamp/www/demo/bin/model_min.svg";
         	String markingSchemePath = "C:/wamp/www/demo/bin/rubric.xml";
         	String resultsPath  = "C:/wamp/www/demo/bin/feedback.xml";
         	
+        	//System.out.println(VennEvaluationApiResource.getVennDiagram(studentAnswerPath));
         	VennEvaluationApiResource.evaluate(studentAnswerPath, questionPath, modelAnswerPath, markingSchemePath, resultsPath);
         }
         
@@ -58,7 +66,7 @@ public class ExamEval {
             Rubric markingRubric = new Rubric("Venn Diagram");
 
             //Check for exceptions
-            rubricReader.parse(markingRubric, "res/test/marking_scheme_1.0_1.xml");   
+            rubricReader.parse(markingRubric, "C:/wamp/www/demo/bin/rubric.xml");   
         }
         
         if(false){
@@ -226,4 +234,34 @@ public class ExamEval {
 //        else
 //            lablesNominal.add(temp);
 //    }
+private String readSVGFile (String svgfileIn) throws IOException {
+        
+        String svgFile=null;
+        
+        BufferedReader br=null;
+        try {
+            br = new BufferedReader(new FileReader(svgfileIn));
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            svgFile = sb.toString();
+        } 
+        catch(java.io.IOException ex){
+        	Logger.getLogger(SVGReadPlatformServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally {
+//            try {
+//                br.close();
+//            } catch (IOException ex) {
+//                Logger.getLogger(SVGReadPlatformServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+        }
+           
+        return svgFile;
+    }
 }

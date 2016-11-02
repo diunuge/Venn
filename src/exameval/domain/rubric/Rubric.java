@@ -60,21 +60,21 @@ public class Rubric {
         questions.get(0).addSubQuestionMarkSet(id, subQuestionIndex);
     }
 
-    public void setSubQuestionMarkSetMarks(int marks, int subQuestionIndex, int markSetIndex) {
-        questions.get(0).setSubQuestionMarkSetMarks(marks, subQuestionIndex, markSetIndex);
+    public void setSubQuestionMarkSetTotalMarks(int marks, int subQuestionIndex, int markSetIndex) {
+        questions.get(0).setSubQuestionMarkSetTotalMarks(marks, subQuestionIndex, markSetIndex);
     }
 
-    public void setSubQuestionMarkSetMethod(String method, int subQuestionIndex, int markSetIndex) {
-        questions.get(0).setSubQuestionMarkSetMethod(method, subQuestionIndex, markSetIndex);
-    }
-
-    public void addSubQuestionMarkSetElementZone(String zoneLabel, String zoneValue, String zoneColor, int markSetIndex, int subQuestionIndex) {
-        questions.get(0).addSubQuestionMarkSetElementZone(zoneLabel, zoneValue, zoneColor, markSetIndex, subQuestionIndex);
-    }
-
-    public void addSubQuestionMarkSetElementSet(String setLabel, int markSetIndex, int subQuestionIndex) {
-        questions.get(0).addSubQuestionMarkSetElementSet(setLabel, markSetIndex, subQuestionIndex);
-    }
+//    public void setSubQuestionMarkSetMethod(String method, int subQuestionIndex, int markSetIndex) {
+//        questions.get(0).setSubQuestionMarkSetMethod(method, subQuestionIndex, markSetIndex);
+//    }
+//
+//    public void addSubQuestionMarkSetElementZone(String zoneLabel, String zoneValue, String zoneColor, int markSetIndex, int subQuestionIndex) {
+//        questions.get(0).addSubQuestionMarkSetElementZone(zoneLabel, zoneValue, zoneColor, markSetIndex, subQuestionIndex);
+//    }
+//
+//    public void addSubQuestionMarkSetElementSet(String setLabel, int markSetIndex, int subQuestionIndex) {
+//        questions.get(0).addSubQuestionMarkSetElementSet(setLabel, markSetIndex, subQuestionIndex);
+//    }
     
     public int getNoOfSubQuestions(){
     	return questions.get(0).getNoOfSubQuestions();
@@ -84,29 +84,80 @@ public class Rubric {
 		return questions.get(0).getNoOfMarkSets(subQuestionIndex);
 	}
 
-	public int getNoOfMarkSetElements(int subQuestionIndex, int markSetIndex) {
-		return questions.get(0).getNoOfMarkSetElements(subQuestionIndex, markSetIndex);
-	}
+//	public int getNoOfMarkSetElements(int subQuestionIndex, int markSetIndex) {
+//		return questions.get(0).getNoOfMarkSetElements(subQuestionIndex, markSetIndex);
+//	}
 
 	public String getSubQuestionId(int subQuestionIndex) {
 		return questions.get(0).getSubQuestionId(subQuestionIndex);
 	}
 
-	public String getSubQuestionMarkSetMethod(int subQuestionIndex, int markSetIndex) {
-		return questions.get(0).getSubQuestionMarkSetMethod(subQuestionIndex, markSetIndex);
-	}
-
-	public ArrayList<MarkData> getSubQuestionMarkDataSets(int subQuestionIndex, int markSetIndex) {
-		return questions.get(0).getSubQuestionMarkDataSets(subQuestionIndex, markSetIndex);
-	}
-	
-	public int getSubQuestionMarkSetMarks(int subQuestionIndex, int markSetIndex){
-		return questions.get(0).getSubQuestionMarkSetMarks(subQuestionIndex, markSetIndex);
-	}
+//	public String getSubQuestionMarkSetMethod(int subQuestionIndex, int markSetIndex) {
+//		return questions.get(0).getSubQuestionMarkSetMethod(subQuestionIndex, markSetIndex);
+//	}
+//
+//	public ArrayList<MarkData> getSubQuestionMarkDataSets(int subQuestionIndex, int markSetIndex) {
+//		return questions.get(0).getSubQuestionMarkDataSets(subQuestionIndex, markSetIndex);
+//	}
+//	
+//	public int getSubQuestionMarkSetMarks(int subQuestionIndex, int markSetIndex){
+//		return questions.get(0).getSubQuestionMarkSetMarks(subQuestionIndex, markSetIndex);
+//	}
 
 	public String getQuestionID() {
 		// TODO Auto-generated method stub
 		return questions.get(0).getID();
+	}
+
+	public void addSubQuestionMarkSetData(int id, int subQuestionIndex, int markSetIndex) {
+		questions.get(0).subQuestions.get(subQuestionIndex).markSets.get(markSetIndex).addData(id);
+		
+	}
+
+	public void addSubQuestionMarkSetDataMarks(int marks, int subQuestionIndex, int markSetIndex,
+			int markSetDataIndex) {
+		
+		questions.get(0).subQuestions.get(subQuestionIndex).markSets.get(markSetIndex).data.get(markSetDataIndex).setMarks(marks);		
+	}
+
+	public void addSubQuestionMarkSetDataMethod(String method, int subQuestionIndex, int markSetIndex,
+			int markSetDataIndex) {
+
+		questions.get(0).subQuestions.get(subQuestionIndex).markSets.get(markSetIndex).data.get(markSetDataIndex).setMethod(method);
+	}
+
+	public void addSubQuestionMarkSetElementZone(String zoneLabel, String zoneValue, String zoneColor,
+			int markSetDataIndex, int markSetIndex, int subQuestionIndex) {
+
+		questions.get(0).subQuestions.get(subQuestionIndex).markSets.get(markSetIndex)
+			.data.get(markSetDataIndex).addElementZone(zoneLabel, zoneValue, zoneColor);
+	}
+
+	public void addSubQuestionMarkSetElementSet(String setLabel, int markSetDataIndex, int markSetIndex,
+			int subQuestionIndex) {
+		
+		questions.get(0).subQuestions.get(subQuestionIndex).markSets.get(markSetIndex)
+			.data.get(markSetDataIndex).addMarkSetElementSet(setLabel);
+	}
+
+	public int getNoOfMarkSetData(int subQuestionIndex, int markSetIndex) {
+		
+		return questions.get(0).subQuestions.get(subQuestionIndex).markSets.get(markSetIndex).data.size();
+	}
+
+	public ArrayList<MarkData> getSubQuestionMarkDataSets(int subQuestionIndex, int markSetIndex, int dataIndex) {
+		
+		return questions.get(0).subQuestions.get(subQuestionIndex).markSets.get(markSetIndex).data.get(dataIndex).markDataSets;
+	}
+
+	public String getSubQuestionMarkSetDataMethod(int subQuestionIndex, int markSetIndex, int dataIndex) {
+		
+		return questions.get(0).subQuestions.get(subQuestionIndex).markSets.get(markSetIndex).data.get(dataIndex).getMethod();
+	}
+
+	public int getSubQuestionMarkSetDataMarks(int subQuestionIndex, int markSetIndex, int dataIndex) {
+
+		return questions.get(0).subQuestions.get(subQuestionIndex).markSets.get(markSetIndex).data.get(dataIndex).getMarks();
 	}
 
 }

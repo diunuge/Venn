@@ -13,49 +13,53 @@ import java.util.ArrayList;
 public class MarkSet {
     
     int id;
-    int marks;
-    String method;
-    ArrayList<MarkData> markDataSets;
+    int totalMarks;
+    ArrayList<Data> data;
 
     public MarkSet(int id) {
         this.id = id;
+        data = new ArrayList<>();
     }
 
-    public void setMarks(int marks) {
-        this.marks = marks;
+    public void setMarks(int totalMarks) {
+        this.totalMarks = totalMarks;
+    }
+    
+    public void addData(int id) {
+        if(data == null)
+        	data = new ArrayList<>();
+            
+        data.add(new Data(id));        
     }
 
-    void setMethod(String method) {
-        this.method = method;                
+    void addElementZone(String zoneLabel, String zoneValue, String zoneColor, int markSetDataIndex) {
+    	
+    	data.get(markSetDataIndex).addElementZone(zoneLabel, zoneValue, zoneColor);
     }
 
-    void addElementZone(String zoneLabel, String zoneValue, String zoneColor) {
-        if(markDataSets==null)
-            markDataSets = new ArrayList<>();
-        
-        markDataSets.add(new MarkDataZone(zoneLabel, zoneValue, zoneColor));
+    void addMarkSetElementSet(String setLabel, int markSetDataIndex) {
+
+    	data.get(markSetDataIndex).addMarkSetElementSet(setLabel);
     }
 
-    void addMarkSetElementSet(String setLabel) {
-        if(markDataSets==null)
-            markDataSets = new ArrayList<>();
-        
-        markDataSets.add(new MarkDataSet(setLabel));
-    }
-
-	public int getNoOfElements() {
-		return markDataSets.size();
+	public int getNoOfElements(int markSetDataIndex) {
+		return data.get(markSetDataIndex).markDataSets.size();
 	}
 
-	public String getMethod() {
-		return this.method;
-	}
-
-	public ArrayList<MarkData> getMarkDataSets() {
-		return this.markDataSets;
+	public ArrayList<Data> getMarkSetData() {
+		return this.data;
 	}
 	
-	public int getMarks(){
-		return this.marks;
+	public int getTotalMarks(){
+		return this.totalMarks;
+	}
+
+	public String getDataMethod(int markSetDataIndex) {
+		return data.get(markSetDataIndex).getMethod();
+	}
+
+
+	public ArrayList<MarkData> getMarkDataSets(int markSetDataIndex) {
+		return data.get(markSetDataIndex).getMarkDataSets();
 	}
 }
