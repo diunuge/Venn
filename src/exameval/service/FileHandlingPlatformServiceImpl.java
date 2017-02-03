@@ -42,6 +42,8 @@ public class FileHandlingPlatformServiceImpl implements FileHandlingPlatformServ
                 Logger.getLogger(SVGReadPlatformServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        
            
         return fileStr;
 	}

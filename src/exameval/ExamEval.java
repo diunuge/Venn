@@ -51,9 +51,9 @@ public class ExamEval {
         
         if(true){
             
-    		String studentAnswerPath  = "C:/wamp/www/demo/bin/answer_min.svg";
+    		String studentAnswerPath  = "C:/wamp/www/demo/bin/answer.svg";
         	String questionPath  = "C:/wamp/www/demo/bin/question.xml";
-        	String modelAnswerPath  = "C:/wamp/www/demo/bin/model_min.svg";
+        	String modelAnswerPath  = "C:/wamp/www/demo/bin/model.svg";
         	String markingSchemePath = "C:/wamp/www/demo/bin/rubric.xml";
         	String resultsPath  = "C:/wamp/www/demo/bin/feedback.xml";
         	
@@ -72,7 +72,7 @@ public class ExamEval {
         if(false){
             //String svgFile = "venn_min.svg";
             //String svgFile = "res/test/marking_scheme_1.0_1.xml";
-            String svgFile = "res/test/1.1_min.svg";
+            String svgFile = "C:/wamp/www/demo/temp/answer_withpath_min_1.svg";
             SVGImage svgImage = new SVGImage();
             VennDiagram vennDiagram = new VennDiagram("Untitled");
 
@@ -80,7 +80,7 @@ public class ExamEval {
             svgReader.parse(svgImage, svgFile);
             svgImage.print();
 
-            SVG2VennTranslatePlatformService svg2VennTranslator = new SVG2VennTranslatePlatformServiceImplOld();
+            SVG2VennTranslatePlatformService svg2VennTranslator = new SVG2VennTranslatePlatformServiceImplMulti();
 
             svg2VennTranslator.translate(vennDiagram, svgImage);
 

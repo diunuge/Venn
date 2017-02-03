@@ -4,6 +4,7 @@ import exameval.ExamEval;
 import exameval.domain.svg.SVGEllipse;
 import exameval.domain.svg.SVGImage;
 import exameval.domain.svg.SVGLine;
+import exameval.domain.svg.SVGPath;
 import exameval.domain.svg.SVGRectangle;
 import exameval.domain.svg.SVGText;
 import java.io.BufferedReader;
@@ -81,6 +82,15 @@ public class SVGReadPlatformServiceImpl implements SVGReadPlatformService{
             }
             
             source = new InputSource(new StringReader(svgFile));
+            list = (NodeList)xPath.evaluate("//path", source, XPathConstants.NODESET);
+            
+            List<Element> paths = new ArrayList<>(list.getLength());
+            for (int i = 0; i < list.getLength(); i++)
+            {
+            	paths.add((Element)list.item(i));
+            }
+            
+            source = new InputSource(new StringReader(svgFile));
             list = (NodeList)xPath.evaluate("/svg", source, XPathConstants.NODESET);
             Element svg = (Element)list.item(0);
             svgImage.setSize(
@@ -151,6 +161,18 @@ public class SVGReadPlatformServiceImpl implements SVGReadPlatformService{
                 svgImage.addText(text);
             }
             
+            for (int i = 0; i < paths.size(); i++)
+            {
+                Element pathElement = paths.get(i);
+                //System.out.println(rectangles.get(i).getAttribute("width"));
+                //System.out.println(texts.get(i).getTextContent());
+                
+                SVGPath path = new SVGPath(pathElement.getAttribute("d"),
+                		pathElement.getAttribute("fill"));
+                
+                svgImage.addPath(path);
+            }
+            
         } catch (XPathExpressionException ex) {
             Logger.getLogger(SVGReadPlatformServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -179,12 +201,25 @@ public class SVGReadPlatformServiceImpl implements SVGReadPlatformService{
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
 
+            int lineIndex=0;
             while (line != null) {
-                sb.append(line);
-                sb.append(System.lineSeparator());
+            	
+            	if(lineIndex<1 || lineIndex>8){
+            		sb.append(line);
+            		sb.append(System.lineSeparator());
+            	}
                 line = br.readLine();
+                lineIndex++;
             }
             svgFile = sb.toString();
+            
+            svgFile = svgFile.replace(" xmlns=\"http://www.w3.org/2000/svg\"", "");
+            //svgFile = svgFile.replaceAll("(?s)(?<=<g>\n)(.*?)(?=\n</g>)", "REPLACE");
+            
+            //String str = "sfd\nsdfsdf<g>\nthis it to be\n replaced\n</g>sdfsdf";
+            //System.out.println(str.replaceAll("(?s)(?<=<g>\n)(.*?)(?=\n</g>)", "replacement"));
+            
+            System.out.println(svgFile);
         } 
         catch(java.io.IOException ex){
         	Logger.getLogger(SVGReadPlatformServiceImpl.class.getName()).log(Level.SEVERE, null, ex);

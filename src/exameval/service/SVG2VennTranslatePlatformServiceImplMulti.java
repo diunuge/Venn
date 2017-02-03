@@ -333,6 +333,10 @@ public class SVG2VennTranslatePlatformServiceImplMulti implements SVG2VennTransl
             for (int i=0; i<textRemains.size(); i++){
                 
                 SVGText text = textRemains.get(i);
+                if(!universal_set.get(0).isIn(text.getX(), text.getY())){
+                	continue;
+                }
+                
                 if(sets.get(0).isOnBoundry(text.getX(), text.getY())
                         || sets.get(1).isOnBoundry(text.getX(), text.getY()))
                 {
@@ -355,7 +359,13 @@ public class SVG2VennTranslatePlatformServiceImplMulti implements SVG2VennTransl
             for (int i=0; i<textsWithinZones.size(); i++){
             	
             	VennZone vennZone = vennZones.get(2*textAssociationWithSets[0][i]+textAssociationWithSets[1][i]);
-            	vennZone.setValue(textsWithinZones.get(i).getText());
+
+            	if(vennZone.getValue()==null)
+            		vennZone.setValue(textsWithinZones.get(i).getText());
+            	else{
+            		String newValue = vennZone.getValue()+"$"+textsWithinZones.get(i).getText();
+            		vennZone.setValue(newValue);
+            	}
             }
                   
             // 
@@ -369,10 +379,21 @@ public class SVG2VennTranslatePlatformServiceImplMulti implements SVG2VennTransl
                     vennSets.get(0).setValue(text.getText());
                     
                     String zoneName = SetLabels[0].getText();
-                    VennZone vennZone = new VennZone(zoneName);
-                    vennZone.setValue(text.getText());
-                    vennZone.setValidity(true);
-                    vennZones.add(vennZone);
+                    for(int index=0; index<vennZones.size(); index++){
+                    	if(vennZones.get(index).getIdentifire().equals(zoneName)){
+                    		String newValue = vennZones.get(index).getValue()+"$"+text.getText();
+                    		vennZones.get(index).setValue(newValue);
+                    		break;
+                    	}
+                    	
+                    	if(index==vennZones.size()-1){
+                    		VennZone vennZone = new VennZone(zoneName);
+                            vennZone.setValue(text.getText());
+                            vennZone.setValidity(true);
+                            vennZones.add(vennZone);
+                            break;
+                    	}
+                    }
                 }
                 else if(!vennSets.get(0).getSVGObject().isOnBoundry(text.getX(), text.getY())
                         && vennSets.get(1).getSVGObject().isOnBoundry(text.getX(), text.getY()))
@@ -380,10 +401,21 @@ public class SVG2VennTranslatePlatformServiceImplMulti implements SVG2VennTransl
                     vennSets.get(1).setValue(text.getText());
 
                     String zoneName = SetLabels[1].getText();
-                    VennZone vennZone = new VennZone(zoneName);
-                    vennZone.setValue(text.getText());
-                    vennZone.setValidity(true);
-                    vennZones.add(vennZone);
+                    for(int index=0; index<vennZones.size(); index++){
+                    	if(vennZones.get(index).getIdentifire().equals(zoneName)){
+                    		String newValue = vennZones.get(index).getValue()+"$"+text.getText();
+                    		vennZones.get(index).setValue(newValue);
+                    		break;
+                    	}
+                    	
+                    	if(index==vennZones.size()-1){
+                    		VennZone vennZone = new VennZone(zoneName);
+                            vennZone.setValue(text.getText());
+                            vennZone.setValidity(true);
+                            vennZones.add(vennZone);
+                            break;
+                    	}
+                    }
                 }
                 else if(vennSets.get(0).getSVGObject().isOnBoundry(text.getX(), text.getY())
                         && vennSets.get(1).getSVGObject().isOnBoundry(text.getX(), text.getY())
@@ -418,7 +450,7 @@ public class SVG2VennTranslatePlatformServiceImplMulti implements SVG2VennTransl
                 }
             }
             
-            
+            /*
             //Find Set Labels
             int tolerence = 10;
             
@@ -426,6 +458,199 @@ public class SVG2VennTranslatePlatformServiceImplMulti implements SVG2VennTransl
             ArrayList<SVGText> SetLabelsAssigned = new ArrayList<SVGText>();
             
             for (int i=0; i<numOfSets; i++){
+                for (int j=0; j<nominalTexts.size(); j++){
+                    
+                    SVGText text = nominalTexts.get(j);
+                    
+                    //System.out.println("Distance from "+text.getText()+" to Ellipse "+ i + "is :"+ sets.get(i).getDistance(text.getX(), text.getY()));
+                    if(sets.get(i).isCloseToBoundry(text.getX(), text.getY(), tolerence))
+                    {
+                        boolean valid = true;
+                        for (int k=0; k<numOfSets; k++){
+                            if(k==i)
+                                continue;
+                            
+                            if(sets.get(k).isCloseToBoundry(text.getX(), text.getY(), tolerence)){
+                                valid = false;
+                                break;
+                            }
+                        }
+                        
+                        if(valid){
+                            SetLabels[i] = text;
+                            SetLabelsAssigned.add(text);
+                            break;
+                        }
+                    }
+                }
+            }
+            
+
+            ArrayList<SVGText> nominalTextsRemained = new ArrayList<SVGText>(nominalTexts);
+            if(SetLabelsAssigned.size()<numOfSets){
+            	for (int i=0; i<SetLabelsAssigned.size(); i++){
+            		nominalTextsRemained.remove(SetLabelsAssigned.get(i));
+            	}
+            }
+            
+            //Increase the tolerence & search again
+            tolerence = 15;
+            for (int i=0; i<numOfSets; i++){
+            	
+            	if(SetLabels[i]!=null){
+            		continue;
+            	}
+            	
+                for (int j=0; j<nominalTextsRemained.size(); j++){
+                    
+                    SVGText text = nominalTextsRemained.get(j);
+                    if(sets.get(i).isCloseToBoundry(text.getX(), text.getY(), tolerence))
+                    {
+                        boolean valid = true;
+                        for (int k=0; k<numOfSets; k++){
+                            if(k==i)
+                                continue;
+                            
+                            if(sets.get(k).isCloseToBoundry(text.getX(), text.getY(), tolerence)){
+                                valid = false;
+                                break;
+                            }
+                        }
+                        
+                        if(valid){
+                            SetLabels[i] = text;
+                            SetLabelsAssigned.add(text);
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            //Assign generated label
+            for (int i=0; i<numOfSets; i++){
+            	
+            	if(SetLabels[i]==null){
+            		SetLabels[i] = new SVGText(0, 0, "Unlabeled_"+i, 0);
+            	}
+            }*/
+          //Find Set Labels
+            int tolerence = 20;
+            SVGText[] SetLabels = new SVGText[numOfSets];
+            ArrayList<SVGText> SetLabelsAssigned = new ArrayList<SVGText>();
+            
+            SVGLine [] associationArrows = new SVGLine [numOfSets];
+            
+            if(arrows.size()>0){
+            	//Arrow labeled
+            	for (int i=0; i<numOfSets; i++){
+            		for (int j=0; j<arrows.size(); j++){
+            			
+            			SVGLine arrow = arrows.get(j);
+                        
+                        //System.out.println("Distance from "+text.getText()+" to Ellipse "+ i + "is :"+ sets.get(i).getDistance(text.getX(), text.getY()));
+                        if(sets.get(i).isCloseToBoundry(arrow.getX1(), arrow.getY1(), tolerence)
+                        		||sets.get(i).isCloseToBoundry(arrow.getX2(), arrow.getY2(), tolerence))
+                        {
+                        	associationArrows[i] = arrow;
+                        }
+            		}
+            	}
+            }
+            
+            int arrowTolerence = 50;
+            for (int i=0; i<numOfSets; i++){
+            	
+            	if(SetLabels[i]!=null)
+            		continue;
+            	
+            	if(associationArrows[i]!=null){
+            		//There is a associated arrow
+            		if(sets.get(i).isCloseToBoundry(associationArrows[i].getX1(), associationArrows[i].getY1(), tolerence)){
+            			//Find text near x2, y2
+            			for (int j=0; j<possibleArrowLabels.size(); j++){
+            				
+            				SVGText text = possibleArrowLabels.get(j);
+            				
+            				if(associationArrows[i].isCloseToEnd(
+            						text.getX(), 
+            						text.getY(), 
+            						arrowTolerence, 
+            						1)){
+            					SetLabels[i] = text;
+                                SetLabelsAssigned.add(text);
+            				}
+            			}
+            		}
+            		else{
+            			//Find text near x1, y1
+            			for (int j=0; j<possibleArrowLabels.size(); j++){
+            				
+            				SVGText text = possibleArrowLabels.get(j);
+            				
+            				if(associationArrows[i].isCloseToEnd(
+            						text.getX(), 
+            						text.getY(), 
+            						tolerence, 
+            						0)){
+            					SetLabels[i] = text;
+                                SetLabelsAssigned.add(text);
+            				}
+            			}
+            		}
+            	}
+            }
+
+            arrowTolerence = 100;
+            for (int i=0; i<numOfSets; i++){
+            	
+            	if(SetLabels[i]!=null)
+            		continue;
+            	
+            	if(associationArrows[i]!=null){
+            		//There is a associated arrow
+            		if(sets.get(i).isCloseToBoundry(associationArrows[i].getX1(), associationArrows[i].getY1(), tolerence)){
+            			//Find text near x2, y2
+            			for (int j=0; j<possibleArrowLabels.size(); j++){
+            				
+            				SVGText text = possibleArrowLabels.get(j);
+            				
+            				if(associationArrows[i].isCloseToEnd(
+            						text.getX(), 
+            						text.getY(), 
+            						arrowTolerence, 
+            						1)){
+            					SetLabels[i] = text;
+                                SetLabelsAssigned.add(text);
+            				}
+            			}
+            		}
+            		else{
+            			//Find text near x1, y1
+            			for (int j=0; j<possibleArrowLabels.size(); j++){
+            				
+            				SVGText text = possibleArrowLabels.get(j);
+            				
+            				if(associationArrows[i].isCloseToEnd(
+            						text.getX(), 
+            						text.getY(), 
+            						tolerence, 
+            						0)){
+            					SetLabels[i] = text;
+                                SetLabelsAssigned.add(text);
+            				}
+            			}
+            		}
+            	}
+            }
+            
+            tolerence = 10;
+            
+            for (int i=0; i<numOfSets; i++){
+
+            	if(SetLabels[i]!=null){
+            		continue;
+            	}
+            	
                 for (int j=0; j<nominalTexts.size(); j++){
                     
                     SVGText text = nominalTexts.get(j);
@@ -599,6 +824,10 @@ public class SVG2VennTranslatePlatformServiceImplMulti implements SVG2VennTransl
             for (int i=0; i<textRemains.size(); i++){
                 
                 SVGText text = textRemains.get(i);
+                if(!universal_set.get(0).isIn(text.getX(), text.getY())){
+                	continue;
+                }
+                
                 if(sets.get(0).isOnBoundry(text.getX(), text.getY())
                         || sets.get(1).isOnBoundry(text.getX(), text.getY())
                         || sets.get(2).isOnBoundry(text.getX(), text.getY()))
@@ -623,7 +852,12 @@ public class SVG2VennTranslatePlatformServiceImplMulti implements SVG2VennTransl
             for (int i=0; i<textsWithinZones.size(); i++){
             	
             	VennZone vennZone = vennZones.get(4*textAssociationWithSets[0][i]+2*textAssociationWithSets[1][i]+textAssociationWithSets[2][i]);
-            	vennZone.setValue(textsWithinZones.get(i).getText());
+            	if(vennZone.getValue()==null)
+            		vennZone.setValue(textsWithinZones.get(i).getText());
+            	else{
+            		String newValue = vennZone.getValue()+"$"+textsWithinZones.get(i).getText();
+            		vennZone.setValue(newValue);
+            	}
             }
                         
             for (int i=0; i<textsOnBoundaries.size(); i++){
@@ -635,25 +869,43 @@ public class SVG2VennTranslatePlatformServiceImplMulti implements SVG2VennTransl
                         && !vennSets.get(2).getSVGObject().isOnBoundry(text.getX(), text.getY()))
                 {
                     vennSets.get(0).setValue(text.getText());
+
+                    String zoneName = SetLabels[0].getText();
+                    VennZone vennZone = new VennZone(zoneName);
+                    vennZone.setValue(text.getText());
+                    vennZone.setValidity(true);
+                    vennZones.add(vennZone);
                 }
                 else if(!vennSets.get(0).getSVGObject().isOnBoundry(text.getX(), text.getY())
                         && vennSets.get(1).getSVGObject().isOnBoundry(text.getX(), text.getY())
                         && !vennSets.get(2).getSVGObject().isOnBoundry(text.getX(), text.getY()))
                 {
                     vennSets.get(1).setValue(text.getText());
+
+                    String zoneName = SetLabels[1].getText();
+                    VennZone vennZone = new VennZone(zoneName);
+                    vennZone.setValue(text.getText());
+                    vennZone.setValidity(true);
+                    vennZones.add(vennZone);
                 }
                 else if(!vennSets.get(0).getSVGObject().isOnBoundry(text.getX(), text.getY())
                         && !vennSets.get(1).getSVGObject().isOnBoundry(text.getX(), text.getY())
                         && vennSets.get(2).getSVGObject().isOnBoundry(text.getX(), text.getY()))
                 {
                     vennSets.get(2).setValue(text.getText());
+
+                    String zoneName = SetLabels[2].getText();
+                    VennZone vennZone = new VennZone(zoneName);
+                    vennZone.setValue(text.getText());
+                    vennZone.setValidity(true);
+                    vennZones.add(vennZone);
                 }
                 else if(!vennSets.get(0).getSVGObject().isOnBoundry(text.getX(), text.getY())
                         && vennSets.get(1).getSVGObject().isOnBoundry(text.getX(), text.getY())
                         && vennSets.get(2).getSVGObject().isOnBoundry(text.getX(), text.getY()))
                 {
                 	//TODO fix labels
-                    VennZone vennZone = new VennZone("B.C");
+                    VennZone vennZone = new VennZone(SetLabels[1].getText()+"."+SetLabels[2].getText());
                     vennZone.setValue(text.getText());
                     vennZone.setValidity(true);
                     vennZones.add(vennZone);
@@ -662,7 +914,7 @@ public class SVG2VennTranslatePlatformServiceImplMulti implements SVG2VennTransl
                         && !vennSets.get(1).getSVGObject().isOnBoundry(text.getX(), text.getY())
                         && vennSets.get(2).getSVGObject().isOnBoundry(text.getX(), text.getY()))
                 {
-                    VennZone vennZone = new VennZone("A.C");
+                    VennZone vennZone = new VennZone(SetLabels[0].getText()+"."+SetLabels[2].getText());
                     vennZone.setValue(text.getText());
                     vennZone.setValidity(true);
                     vennZones.add(vennZone);
@@ -671,7 +923,7 @@ public class SVG2VennTranslatePlatformServiceImplMulti implements SVG2VennTransl
                         && vennSets.get(1).getSVGObject().isOnBoundry(text.getX(), text.getY())
                         && !vennSets.get(2).getSVGObject().isOnBoundry(text.getX(), text.getY()))
                 {
-                    VennZone vennZone = new VennZone("A.B");
+                    VennZone vennZone = new VennZone(SetLabels[0].getText()+"."+SetLabels[1].getText());
                     vennZone.setValue(text.getText());
                     vennZone.setValidity(true);
                     vennZones.add(vennZone);

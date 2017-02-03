@@ -16,6 +16,7 @@ public class SVGImage {
     private ArrayList<SVGCircle> circles;
     private ArrayList<SVGLine> lines;
     private ArrayList<SVGText> texts;
+    private ArrayList<SVGPath> paths;
     
     public SVGImage(){
         
@@ -27,6 +28,7 @@ public class SVGImage {
         this.circles = new ArrayList<>();
         this.lines = new ArrayList<>();
         this.texts = new ArrayList<>();
+        this.paths = new ArrayList<>();
     }
     
     public void setSize(int height, int width){
@@ -61,6 +63,10 @@ public class SVGImage {
     public void addText(SVGText text){
         this.texts.add(text);
     }
+
+	public void addPath(SVGPath path) {
+		this.paths.add(path);		
+	}
     
     public int getNumOfRectangles(){
         return this.rectangles.size();
@@ -82,6 +88,10 @@ public class SVGImage {
         return this.texts.size();
     }
     
+    public int getNumOfPaths(){
+        return this.paths.size();
+    }
+    
     public ArrayList<SVGRectangle> getRectangles(){
         return this.rectangles;
     }
@@ -100,6 +110,10 @@ public class SVGImage {
     
     public ArrayList<SVGText> getTexts(){
         return this.texts;
+    }
+    
+    public ArrayList<SVGPath> getPaths(){
+        return this.paths;
     }
     
     public void print(){
@@ -124,6 +138,11 @@ public class SVGImage {
         System.out.println("No of Texts: " + texts.size());
         for (int i = 0; i < texts.size(); i++){
             texts.get(i).print();
+        }
+        
+        System.out.println("No of Paths: " + paths.size());
+        for (int i = 0; i < paths.size(); i++){
+            paths.get(i).print();
         }
     }
 }

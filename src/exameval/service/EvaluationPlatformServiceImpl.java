@@ -48,14 +48,25 @@ public class EvaluationPlatformServiceImpl implements EvaluationPlatformService{
     	ArrayList<String> setLabelsAnswerArranged = new ArrayList<>();
     	
 	    //TODO: generate feedback for missing labels
-    	
+    	Boolean validityCheck = true;
     	//Check for the basic structure
     	if(setLabelsModel.size()!= setLabelsAnswer.size()){
     		//TODO: generate feedback : diagram mismatch - set numbers are different
     		feedback.addQuestionFeedback("Set structure is different, Need to draw diagram with "+ setLabelsModel.size() + " sets");
     		feedback.setTotalMarks(0);
+    		validityCheck = false;
     	}
-    	else{
+    	
+    	for(int answerLabelIndex=0; answerLabelIndex<setLabelsAnswer.size(); answerLabelIndex++){
+    		if(setLabelsAnswer.get(answerLabelIndex).toLowerCase().contains("unlabeled")){
+    			feedback.addQuestionFeedback("All sets are not labeled correctly!");
+        		feedback.setTotalMarks(0);
+        		validityCheck = false;
+        		break;
+    		}
+    	}
+    	
+    	if(validityCheck){
     		
     		for(int modelLabelIndex=0; 
         			modelLabelIndex<setLabelsModel.size(); 
@@ -180,7 +191,10 @@ public class EvaluationPlatformServiceImpl implements EvaluationPlatformService{
         											if(zoneAnswer.getValue()==null)
         												feedbackSubQ.addFeedback("No label present at the zone "+zoneAnswer.getIdentifire());
         											else{
-        												feedbackSubQ.addFeedback("Label present at the zone \'"+zoneAnswer.getIdentifire()
+        												if(zoneAnswer.getValue().contains("$"))
+        													feedbackSubQ.addFeedback("Multiple labels present at the zone \'"+zoneAnswer.getIdentifire());
+        												else
+        													feedbackSubQ.addFeedback("Label present at the zone \'"+zoneAnswer.getIdentifire()
         														+ "\' should be corrected to " + markDataZone.getLabel()+ ", instead of "+zoneAnswer.getValue());
         												
         											}
@@ -218,7 +232,7 @@ public class EvaluationPlatformServiceImpl implements EvaluationPlatformService{
         					if(check){
         						// feedbackSubQ.addMarks(markingRubric.getSubQuestionMarkSetMarks(subQuestionIndex, markSetIndex));
         						marks += markingRubric.getSubQuestionMarkSetDataMarks(subQuestionIndex, markSetIndex, dataIndex);
-        						feedbackSubQ.addFeedback("Correct answer");
+        						//feedbackSubQ.addFeedback("Correct answer");
         					}
         					else{
     							//feedbackSubQ.addMarks(0);
@@ -292,7 +306,10 @@ public class EvaluationPlatformServiceImpl implements EvaluationPlatformService{
         											if(zoneAnswer.getValue()==null)
         												feedbackSubQ.addFeedback("No label present at the zone "+zoneAnswer.getIdentifire());
         											else{
-        												feedbackSubQ.addFeedback("Label present at the zone \'"+zoneAnswer.getIdentifire()
+        												if(zoneAnswer.getValue().contains("$"))
+        													feedbackSubQ.addFeedback("Multiple labels present at the zone \'"+zoneAnswer.getIdentifire());
+        												else
+        													feedbackSubQ.addFeedback("Label present at the zone \'"+zoneAnswer.getIdentifire()
         														+ "\' should be corrected to " + markDataZone.getLabel()+ ", instead of "+zoneAnswer.getValue());
         												
         											}
@@ -325,7 +342,7 @@ public class EvaluationPlatformServiceImpl implements EvaluationPlatformService{
         					if(reqiredCorrectElements<=totalCorrectElements){
         						//feedbackSubQ.addMarks(markingRubric.getSubQuestionMarkSetMarks(subQuestionIndex, markSetIndex));
         						marks += markingRubric.getSubQuestionMarkSetDataMarks(subQuestionIndex, markSetIndex, dataIndex);
-        						feedbackSubQ.addFeedback("Correct answer");
+        						//feedbackSubQ.addFeedback("Correct answer");
         					}
         					else{
     							//feedbackSubQ.addMarks(0);
@@ -336,6 +353,9 @@ public class EvaluationPlatformServiceImpl implements EvaluationPlatformService{
     				}
     				
     				feedbackSubQ.addMarks(marks);
+    				
+    				if(feedbackSubQ.getSubQuestionFeedbacks()==null)
+    					feedbackSubQ.addFeedback("Correct answer");
     				
     				markSetFeedbacks.add(feedbackSubQ);
     				
